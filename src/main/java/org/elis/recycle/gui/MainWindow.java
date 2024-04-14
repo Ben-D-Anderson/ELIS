@@ -46,9 +46,11 @@ public class MainWindow extends JFrame {
     }
 
     private void couldNotFindProductMessage(String barcode) {
-        JOptionPane.showMessageDialog(this,
-                String.format("Could not find product with barcode %s in database.", barcode),
-                "Product Not Found", JOptionPane.ERROR_MESSAGE);
+        errorMessage("Product Not Found", String.format("Could not find product with barcode '%s' in database.", barcode));
+    }
+
+    private void errorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     //todo: implement
@@ -67,25 +69,30 @@ public class MainWindow extends JFrame {
         setScreen(panel);
     }
 
-    public void scanBarcode() throws CameraException {
+    public void scanBarcode() {
         setScreen(barcodeScanningScreen);
 
-        barcodeScanningScreen.start(Duration.ofSeconds(10),
-                //barcode callback
-                barcode -> {
-                    Optional<Product> productOptional = database.findProduct(barcode);
-                    SwingUtilities.invokeLater(() -> {
-                        if (productOptional.isEmpty()) {
-                            mainScreen();
-                            couldNotFindProductMessage(barcode);
-                        } else {
-                            productScreen(productOptional.get());
-                        }
-                    });
-                },
-                //timeout callback
-                () -> SwingUtilities.invokeLater(this::mainScreen)
-        );
+        try {
+            barcodeScanningScreen.start(Duration.ofSeconds(10),
+                    //barcode callback
+                    barcode -> {
+                        Optional<Product> productOptional = database.findProduct(barcode);
+                        SwingUtilities.invokeLater(() -> {
+                            if (productOptional.isEmpty()) {
+                                mainScreen();
+                                couldNotFindProductMessage(barcode);
+                            } else {
+                                productScreen(productOptional.get());
+                            }
+                        });
+                    },
+                    //timeout callback
+                    () -> SwingUtilities.invokeLater(this::mainScreen)
+            );
+        } catch (CameraException e) {
+            mainScreen();
+            errorMessage("Camera Error", e.getMessage());
+        }
     }
 
 }

@@ -34,7 +34,8 @@ public class BarcodeScanner {
             } catch (InterruptedException ignored) {}
         }
         if (cameraOpenAttempts >= MAXIMUM_CAMERA_OPEN_ATTEMPTS)
-            throw new CameraException("Failed to open camera after " + MAXIMUM_CAMERA_OPEN_ATTEMPTS + "attempts.");
+            throw new CameraException("Failed to open camera after " + MAXIMUM_CAMERA_OPEN_ATTEMPTS + " attempts." +
+                    "\nIs it being used by another process?");
 
         BarcodeImageProcessor imageProcessor = new BarcodeImageProcessor(barcodeCallback);
         imageProcessor.start();
