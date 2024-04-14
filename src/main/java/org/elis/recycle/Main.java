@@ -1,20 +1,14 @@
 package org.elis.recycle;
 
-import org.elis.recycle.barcode.CameraException;
 import org.elis.recycle.database.Database;
-import org.elis.recycle.database.Product;
+import org.elis.recycle.database.DatabaseFactory;
 import org.elis.recycle.gui.MainWindow;
 
-import java.util.Optional;
-
 public class Main {
-    public static void main(String[] args) throws CameraException {
-        MainWindow frame = new MainWindow(new Database() {
-            @Override
-            public Optional<Product> findProduct(String barcode) {
-                return Optional.empty();
-            }
-        });
+    public static void main(String[] args) {
+        Database database = DatabaseFactory.loadDatabaseOrBackup(DatabaseFactory.getDatabaseFile());
+
+        MainWindow frame = new MainWindow(database);
         frame.setVisible(true);
 
         frame.scanBarcode();

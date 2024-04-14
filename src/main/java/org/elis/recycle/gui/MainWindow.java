@@ -20,7 +20,12 @@ public class MainWindow extends JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                 UnsupportedLookAndFeelException ignored) {}
+                 UnsupportedLookAndFeelException ignored) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                     UnsupportedLookAndFeelException ignoredAgain) {}
+        }
 
         setLocationRelativeTo(null);
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -34,6 +39,7 @@ public class MainWindow extends JFrame {
 
         setLayout(new GridBagLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("ELIS");
 
         mainScreen();
     }

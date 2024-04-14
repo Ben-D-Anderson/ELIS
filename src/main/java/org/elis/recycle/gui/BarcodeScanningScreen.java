@@ -5,11 +5,10 @@ import org.elis.recycle.barcode.CameraException;
 import org.elis.recycle.barcode.impl.WebcamCameraViewer;
 import org.elis.recycle.barcode.impl.ZXingBarcodeDecoder;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
@@ -22,8 +21,8 @@ public class BarcodeScanningScreen extends JPanel {
     private final Object imageLock = new Object();
     private Image image;
 
-    private final JLabel loadingImageLabel = new JLabel();
-    private final AtomicBoolean noImageLabelAdded = new AtomicBoolean(false);
+    private final JLabel loadingGifLabel = new JLabel();
+    private final AtomicBoolean loadingGifAdded = new AtomicBoolean(false);
 
     public BarcodeScanningScreen() {
         super();
@@ -31,24 +30,25 @@ public class BarcodeScanningScreen extends JPanel {
 
         try {
             URL loadingGifURL = Objects.requireNonNull(getClass().getResource("/loading.gif"));
-            loadingImageLabel.setIcon(new ImageIcon(loadingGifURL));
+            loadingGifLabel.setIcon(new ImageIcon(loadingGifURL));
+            loadingGifLabel.setOpaque(false);
         } catch (NullPointerException e) {
-            loadingImageLabel.setText("No Image Available");
+            loadingGifLabel.setText("No Image Available");
         }
-        addNoImageText();
+        addLoadingGif();
     }
 
-    private void addNoImageText() {
-        if (!noImageLabelAdded.get()) {
-            add(loadingImageLabel);
-            noImageLabelAdded.set(true);
+    private void addLoadingGif() {
+        if (!loadingGifAdded.get()) {
+            add(loadingGifLabel);
+            loadingGifAdded.set(true);
         }
     }
 
-    private void removeNoImageText() {
-        if (noImageLabelAdded.get()) {
-            remove(loadingImageLabel);
-            noImageLabelAdded.set(false);
+    private void removeLoadingGif() {
+        if (loadingGifAdded.get()) {
+            remove(loadingGifLabel);
+            loadingGifAdded.set(false);
         }
     }
 
@@ -62,7 +62,7 @@ public class BarcodeScanningScreen extends JPanel {
                             BufferedImage.SCALE_FAST);
         }
         SwingUtilities.invokeLater(() -> {
-            removeNoImageText();
+            removeLoadingGif();
             repaint();
         });
     }
@@ -72,19 +72,23 @@ public class BarcodeScanningScreen extends JPanel {
         synchronized (imageLock) {
             this.image = null;
         }
-        SwingUtilities.invokeLater(() -> {
-            addNoImageText();
-            repaint();
-        });
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                addLoadingGif();
+                repaint();
+            });
+        } catch (InterruptedException | InvocationTargetException ignored) {}
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        synchronized (imageLock) {
-            if (image != null) {
-                g.drawImage(image, getWidth(), 0, -getWidth(), getHeight(), null);
+        if (!loadingGifAdded.get()) {
+            synchronized (imageLock) {
+                if (image != null) {
+                    g.drawImage(image, getWidth(), 0, -getWidth(), getHeight(), null);
+                }
             }
         }
     }
