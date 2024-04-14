@@ -1,9 +1,9 @@
-package org.elis.recycle.camera.impl;
+package org.elis.recycle.barcode.impl;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamException;
-import org.elis.recycle.camera.CameraException;
-import org.elis.recycle.camera.CameraViewer;
+import org.elis.recycle.barcode.CameraException;
+import org.elis.recycle.barcode.CameraViewer;
 
 import java.awt.image.BufferedImage;
 import java.util.Optional;

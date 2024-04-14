@@ -1,19 +1,23 @@
 package org.elis.recycle;
 
-import org.elis.recycle.camera.BarcodeScanner;
-import org.elis.recycle.camera.CameraException;
-import org.elis.recycle.camera.impl.ZXingBarcodeDecoder;
-import org.elis.recycle.camera.impl.WebcamCameraViewer;
+import org.elis.recycle.barcode.CameraException;
+import org.elis.recycle.database.Database;
+import org.elis.recycle.database.Product;
+import org.elis.recycle.gui.MainWindow;
 
-import java.time.Duration;
+import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) throws CameraException {
-        BarcodeScanner barcodeScanner = new
-                BarcodeScanner(WebcamCameraViewer.getDefaultViewer(), new ZXingBarcodeDecoder());
+        MainWindow frame = new MainWindow(new Database() {
+            @Override
+            public Optional<Product> findProduct(String barcode) {
+                return Optional.empty();
+            }
+        });
+        frame.setVisible(true);
 
-        barcodeScanner.scanBarcode(Duration.ofSeconds(10),
-                bufferedImage -> System.out.println(1),
-                value -> System.out.println(value));
+        frame.scanBarcode();
+
     }
 }

@@ -1,4 +1,4 @@
-package org.elis.recycle.camera;
+package org.elis.recycle.barcode;
 
 import java.awt.image.BufferedImage;
 import java.time.Duration;
@@ -24,7 +24,8 @@ public class BarcodeScanner {
 
     public void scanBarcode(Duration timeout,
                             Consumer<BufferedImage> liveImageViewer,
-                            Consumer<String> barcodeCallback) {
+                            Consumer<String> barcodeCallback,
+                            Runnable timeoutCallback) throws CameraException {
 
         int cameraOpenAttempts = 0;
         while (!camera.open() && ++cameraOpenAttempts <= MAXIMUM_CAMERA_OPEN_ATTEMPTS) {
@@ -32,6 +33,8 @@ public class BarcodeScanner {
                 Thread.sleep(CAMERA_OPEN_REATTEMPT_DELAY_MILLISECONDS);
             } catch (InterruptedException ignored) {}
         }
+        if (cameraOpenAttempts >= MAXIMUM_CAMERA_OPEN_ATTEMPTS)
+            throw new CameraException("Failed to open camera after " + MAXIMUM_CAMERA_OPEN_ATTEMPTS + "attempts.");
 
         BarcodeImageProcessor imageProcessor = new BarcodeImageProcessor(barcodeCallback);
         imageProcessor.start();
@@ -48,6 +51,9 @@ public class BarcodeScanner {
 
         imageProcessor.close();
         camera.close();
+
+        if (!barcodeFound.get()) timeoutCallback.run();
+        barcodeFound.set(false);
     }
 
     private class BarcodeImageProcessor extends Thread implements AutoCloseable {
@@ -80,6 +86,7 @@ public class BarcodeScanner {
                     decodedBarcodeOptional.ifPresent(value -> {
                         barcodeFound.set(true);
                         barcodeCallback.accept(value);
+                        close();
                     });
                 }
             }
@@ -88,7 +95,6 @@ public class BarcodeScanner {
         @Override
         public void close() {
             running.set(false);
-            barcodeFound.set(false);
         }
     }
 

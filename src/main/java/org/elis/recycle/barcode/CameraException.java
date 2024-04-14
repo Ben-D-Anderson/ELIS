@@ -1,4 +1,4 @@
-package org.elis.recycle.camera;
+package org.elis.recycle.barcode;
 
 public class CameraException extends Exception{
     public CameraException(String s) { super(s); }
