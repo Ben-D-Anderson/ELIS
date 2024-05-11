@@ -24,6 +24,7 @@ public class BarcodeScanningScreen extends JPanel {
     private final JLabel loadingGifLabel = new JLabel();
     private final AtomicBoolean loadingGifAdded = new AtomicBoolean(false);
 
+    //todo: add back button to go back to main screen
     public BarcodeScanningScreen() {
         super();
         setLayout(new GridBagLayout());
@@ -91,6 +92,11 @@ public class BarcodeScanningScreen extends JPanel {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isOptimizedDrawingEnabled() {
+        return false;
     }
 
     /**

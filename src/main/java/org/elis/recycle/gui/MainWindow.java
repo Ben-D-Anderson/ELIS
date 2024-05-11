@@ -6,16 +6,19 @@ import org.elis.recycle.database.Product;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 
 public class MainWindow extends JFrame {
 
     private final BarcodeScanningScreen barcodeScanningScreen = new BarcodeScanningScreen();
+    private final ProductSearchScreen productSearchScreen;
     private final Database database;
 
     public MainWindow(Database database) {
         this.database = database;
+        this.productSearchScreen = new ProductSearchScreen(database);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -73,6 +76,16 @@ public class MainWindow extends JFrame {
         JLabel label = new JLabel("Product Information For Barcode: " + product.getBarcode());
         panel.add(label);
         setScreen(panel);
+    }
+
+    public void searchForProduct() {
+        setScreen(productSearchScreen);
+
+        try {
+            productSearchScreen.start(this::productScreen, this::mainScreen);
+        } catch (IOException e) {
+            errorMessage("Virtual Keyboard Error", "Failed to open on-screen keyboard.");
+        }
     }
 
     public void scanBarcode() {

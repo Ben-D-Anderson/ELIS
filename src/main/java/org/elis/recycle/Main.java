@@ -11,7 +11,7 @@ public class Main {
         MainWindow frame = new MainWindow(database);
         frame.setVisible(true);
 
-        frame.scanBarcode();
+        frame.searchForProduct();
 
     }
 }

@@ -1,3 +1,15 @@
-{"products": [
-  {"barcode": "5059604498930"}
-]}
+{
+  "products": [
+    {
+      "barcode": "5059604498930",
+      "name": "H&B Multivitamins",
+      "steps": [
+        {
+          "instruction": "",
+          "requires_waste_disposal": false
+        },
+        {}
+      ]
+    }
+  ]
+}
