@@ -1,4 +1,4 @@
-package org.elis.recycle.gui;
+package org.elis.recycle.gui.screens;
 
 import javax.swing.*;
 import java.awt.*;

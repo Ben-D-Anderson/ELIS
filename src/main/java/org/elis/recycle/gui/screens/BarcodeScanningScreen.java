@@ -1,4 +1,4 @@
-package org.elis.recycle.gui;
+package org.elis.recycle.gui.screens;
 
 import org.elis.recycle.barcode.BarcodeScanner;
 import org.elis.recycle.barcode.CameraException;

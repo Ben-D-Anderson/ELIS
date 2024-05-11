@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public class RecycleStep {
 
+    @SerializedName("instruction")
     private final String instruction;
     @SerializedName("requires_waste_disposal")
     private final boolean requiresWasteDisposal;

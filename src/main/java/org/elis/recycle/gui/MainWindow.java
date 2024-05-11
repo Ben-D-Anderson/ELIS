@@ -3,6 +3,9 @@ package org.elis.recycle.gui;
 import org.elis.recycle.barcode.CameraException;
 import org.elis.recycle.database.Database;
 import org.elis.recycle.database.Product;
+import org.elis.recycle.files.Config;
+import org.elis.recycle.gui.screens.BarcodeScanningScreen;
+import org.elis.recycle.gui.screens.ProductSearchScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,9 +19,9 @@ public class MainWindow extends JFrame {
     private final ProductSearchScreen productSearchScreen;
     private final Database database;
 
-    public MainWindow(Database database) {
+    public MainWindow(Config config, Database database) {
         this.database = database;
-        this.productSearchScreen = new ProductSearchScreen(database);
+        this.productSearchScreen = new ProductSearchScreen(config, database);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

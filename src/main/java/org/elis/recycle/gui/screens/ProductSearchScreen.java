@@ -1,7 +1,9 @@
-package org.elis.recycle.gui;
+package org.elis.recycle.gui.screens;
 
 import org.elis.recycle.database.Database;
 import org.elis.recycle.database.Product;
+import org.elis.recycle.files.Config;
+import org.elis.recycle.gui.VirtualKeyboard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +12,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -19,17 +20,20 @@ public class ProductSearchScreen extends JPanel {
     private final JTextField textInputField = new JTextField();
     private final VirtualKeyboard virtualKeyboard;
     private final ProductOptionsPane productOptionsPane = new ProductOptionsPane();
+    private final Database database;
+    private final Config config;
     private Consumer<Product> chosenConsumer;
     private Runnable backButtonCallback;
 
-    public ProductSearchScreen(Database database) {
+    public ProductSearchScreen(Config config, Database database) {
         super();
+        this.config = config;
+        this.database = database;
         virtualKeyboard = new VirtualKeyboard();
         setLayout(new GridBagLayout());
 
-        //todo: add fonts to the config
         JButton backButton = new JButton("Back");
-        backButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 100));
+        backButton.setFont(config.getProductSearchScreenSettings().getBackButtonFont().asFont());
         backButton.setFocusPainted(false);
         backButton.addActionListener(actionEvent -> returnToMenu());
 
@@ -53,8 +57,7 @@ public class ProductSearchScreen extends JPanel {
         });
         textInputField.setBorder(BorderFactory.createCompoundBorder(textInputField.getBorder(),
                 BorderFactory.createEmptyBorder(5, 15, 5, 5)));
-        //todo: add fonts to the config
-        textInputField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 32));
+        textInputField.setFont(config.getProductSearchScreenSettings().getInputBoxFont().asFont());
 
         GridBagConstraints left = new GridBagConstraints();
         left.anchor = GridBagConstraints.NORTHWEST;
@@ -83,22 +86,33 @@ public class ProductSearchScreen extends JPanel {
             super();
             setBorder(BorderFactory.createCompoundBorder(getBorder(),
                     BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-            setLayout(new FlowLayout());
+            setLayout(new GridLayout(12, 1, 0, 2));
         }
     }
 
     private class ProductOption extends JPanel {
         private ProductOption(Product product) {
             super();
-            add(new JLabel(product.getName()));
+            setLayout(new GridBagLayout());
+            setBorder(BorderFactory.createCompoundBorder(getBorder(),
+                    BorderFactory.createEmptyBorder(5, 15, 5, 5)));
+
+            GridBagConstraints nameConstraints = new GridBagConstraints();
+            nameConstraints.anchor = GridBagConstraints.WEST;
+            nameConstraints.weightx = 1;
+            nameConstraints.weighty = 1;
+            nameConstraints.fill = GridBagConstraints.BOTH;
+
+            JLabel productNameLabel = new JLabel(product.getName());
+            productNameLabel.setFont(config.getProductSearchScreenSettings().getProductOptionFont().asFont());
+
+            add(productNameLabel, nameConstraints);
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     stop(product);
                 }
             });
-            //todo: remove
-            setBackground(Color.BLACK);
         }
     }
 
@@ -115,7 +129,7 @@ public class ProductSearchScreen extends JPanel {
         textInputField.requestFocusInWindow();
         this.chosenConsumer = chosenConsumer;
         this.backButtonCallback = backButtonCallback;
-        loadOptions(new LinkedList<>());
+        loadOptions(database.findProducts(""));
         virtualKeyboard.start();
     }
 

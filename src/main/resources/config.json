@@ -1,0 +1,19 @@
+{
+  "product_search_screen": {
+    "back_button_font": {
+      "name": "SansSerif",
+      "style": 0,
+      "size": 100
+    },
+    "input_box_font": {
+      "name": "SansSerif",
+      "style": 0,
+      "size": 32
+    },
+    "product_option_font": {
+      "name": "SansSerif",
+      "style": 0,
+      "size": 32
+    }
+  }
+}
