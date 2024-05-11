@@ -27,6 +27,7 @@ public class ProductSearchScreen extends JPanel {
         virtualKeyboard = new VirtualKeyboard();
         setLayout(new GridBagLayout());
 
+        //todo: add fonts to the config
         JButton backButton = new JButton("Back");
         backButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 100));
         backButton.setFocusPainted(false);
@@ -45,13 +46,14 @@ public class ProductSearchScreen extends JPanel {
         });
         textInputField.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyReleased(KeyEvent e) {
                 String searchQuery = textInputField.getText();
                 loadOptions(database.findProducts(searchQuery));
             }
         });
         textInputField.setBorder(BorderFactory.createCompoundBorder(textInputField.getBorder(),
                 BorderFactory.createEmptyBorder(5, 15, 5, 5)));
+        //todo: add fonts to the config
         textInputField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 32));
 
         GridBagConstraints left = new GridBagConstraints();
@@ -79,29 +81,34 @@ public class ProductSearchScreen extends JPanel {
     private static class ProductOptionsPane extends JPanel {
         private ProductOptionsPane() {
             super();
-            setLayout(new GridLayout());
+            setBorder(BorderFactory.createCompoundBorder(getBorder(),
+                    BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+            setLayout(new FlowLayout());
         }
     }
 
     private class ProductOption extends JPanel {
         private ProductOption(Product product) {
             super();
-            setLayout(new FlowLayout());
             add(new JLabel(product.getName()));
             addMouseListener(new MouseAdapter() {
                 @Override
-                public void mousePressed(MouseEvent e) {
+                public void mouseClicked(MouseEvent e) {
                     stop(product);
                 }
             });
+            //todo: remove
             setBackground(Color.BLACK);
-            System.out.println("Will add " + product.getName());
         }
     }
 
     private void loadOptions(List<Product> products) {
         productOptionsPane.removeAll();
-        products.forEach(product -> productOptionsPane.add(new ProductOption(product)));
+        for (Product product : products) {
+            productOptionsPane.add(new ProductOption(product));
+        }
+        productOptionsPane.revalidate();
+        productOptionsPane.repaint();
     }
 
     public void start(Consumer<Product> chosenConsumer, Runnable backButtonCallback) throws IOException {
