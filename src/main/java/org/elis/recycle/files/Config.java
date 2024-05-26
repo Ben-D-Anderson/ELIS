@@ -12,6 +12,20 @@ public class Config {
     @SerializedName("product_search_screen")
     private final ProductSearchScreenSettings productSearchScreenSettings;
 
+    @SerializedName("barcode_scanning_screen")
+    private final BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+
+    @AllArgsConstructor
+    @Getter
+    public static class BarcodeScanningScreenSettings {
+
+        @SerializedName("scanning_timeout_seconds")
+        private final int scanningTimeoutSeconds;
+        @SerializedName("mirror_image")
+        private final boolean mirrorImage;
+
+    }
+
     @AllArgsConstructor
     @Getter
     public static class ProductSearchScreenSettings {

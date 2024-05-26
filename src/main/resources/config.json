@@ -15,5 +15,9 @@
       "style": 0,
       "size": 32
     }
+  },
+  "barcode_scanning_screen": {
+    "scanning_timeout_seconds": 10,
+    "mirror_image": true
   }
 }

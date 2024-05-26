@@ -4,11 +4,11 @@ import org.elis.recycle.barcode.BarcodeScanner;
 import org.elis.recycle.barcode.CameraException;
 import org.elis.recycle.barcode.impl.WebcamCameraViewer;
 import org.elis.recycle.barcode.impl.ZXingBarcodeDecoder;
+import org.elis.recycle.files.Config;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
@@ -18,6 +18,7 @@ import java.util.function.Consumer;
 public class BarcodeScanningScreen extends JPanel {
 
     private final AtomicBoolean scanning = new AtomicBoolean(false);
+    private final Config config;
     private final Object imageLock = new Object();
     private Image image;
 
@@ -25,8 +26,9 @@ public class BarcodeScanningScreen extends JPanel {
     private final AtomicBoolean loadingGifAdded = new AtomicBoolean(false);
 
     //todo: add back button to go back to main screen
-    public BarcodeScanningScreen() {
+    public BarcodeScanningScreen(Config config) {
         super();
+        this.config = config;
         setLayout(new GridBagLayout());
 
         try {
@@ -73,12 +75,10 @@ public class BarcodeScanningScreen extends JPanel {
         synchronized (imageLock) {
             this.image = null;
         }
-        try {
-            SwingUtilities.invokeAndWait(() -> {
-                addLoadingGif();
-                repaint();
-            });
-        } catch (InterruptedException | InvocationTargetException ignored) {}
+        SwingUtilities.invokeLater(() -> {
+            addLoadingGif();
+            repaint();
+        });
     }
 
     @Override
@@ -88,7 +88,9 @@ public class BarcodeScanningScreen extends JPanel {
         if (!loadingGifAdded.get()) {
             synchronized (imageLock) {
                 if (image != null) {
-                    g.drawImage(image, getWidth(), 0, -getWidth(), getHeight(), null);
+                    g.drawImage(image, getWidth(), 0,
+                            config.getBarcodeScanningScreenSettings().isMirrorImage() ? -getWidth() : getWidth(),
+                            getHeight(), null);
                 }
             }
         }

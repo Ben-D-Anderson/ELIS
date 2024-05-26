@@ -5,6 +5,7 @@ import org.elis.recycle.database.Database;
 import org.elis.recycle.database.Product;
 import org.elis.recycle.files.Config;
 import org.elis.recycle.gui.screens.BarcodeScanningScreen;
+import org.elis.recycle.gui.screens.MainMenuScreen;
 import org.elis.recycle.gui.screens.ProductSearchScreen;
 
 import javax.swing.*;
@@ -15,12 +16,17 @@ import java.util.Optional;
 
 public class MainWindow extends JFrame {
 
-    private final BarcodeScanningScreen barcodeScanningScreen = new BarcodeScanningScreen();
+    private final BarcodeScanningScreen barcodeScanningScreen;
     private final ProductSearchScreen productSearchScreen;
+    private final MainMenuScreen mainMenuScreen;
     private final Database database;
+    private final Config config;
 
     public MainWindow(Config config, Database database) {
+        this.config = config;
         this.database = database;
+        this.mainMenuScreen = new MainMenuScreen(config, this);
+        this.barcodeScanningScreen = new BarcodeScanningScreen(config);
         this.productSearchScreen = new ProductSearchScreen(config, database);
 
         try {
@@ -65,12 +71,8 @@ public class MainWindow extends JFrame {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
-    //todo: implement
     public void mainScreen() {
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel("Main Screen");
-        panel.add(label);
-        setScreen(panel);
+        setScreen(mainMenuScreen);
     }
 
     //todo: implement
@@ -94,27 +96,32 @@ public class MainWindow extends JFrame {
     public void scanBarcode() {
         setScreen(barcodeScanningScreen);
 
-        try {
-            barcodeScanningScreen.start(Duration.ofSeconds(10),
-                    //barcode callback
-                    barcode -> {
-                        Optional<Product> productOptional = database.findProduct(barcode);
-                        SwingUtilities.invokeLater(() -> {
-                            if (productOptional.isEmpty()) {
-                                mainScreen();
-                                couldNotFindProductMessage(barcode);
-                            } else {
-                                productScreen(productOptional.get());
-                            }
-                        });
-                    },
-                    //timeout callback
-                    () -> SwingUtilities.invokeLater(this::mainScreen)
-            );
-        } catch (CameraException e) {
-            mainScreen();
-            errorMessage("Camera Error", e.getMessage());
-        }
+        new Thread(() -> {
+            try {
+                barcodeScanningScreen.start(
+                        Duration.ofSeconds(config.getBarcodeScanningScreenSettings().getScanningTimeoutSeconds()),
+                        //barcode callback
+                        barcode -> {
+                            Optional<Product> productOptional = database.findProduct(barcode);
+                            SwingUtilities.invokeLater(() -> {
+                                if (productOptional.isEmpty()) {
+                                    mainScreen();
+                                    couldNotFindProductMessage(barcode);
+                                } else {
+                                    productScreen(productOptional.get());
+                                }
+                            });
+                        },
+                        //timeout callback
+                        () -> SwingUtilities.invokeLater(this::mainScreen)
+                );
+            } catch (CameraException e) {
+                SwingUtilities.invokeLater(() -> {
+                    mainScreen();
+                    errorMessage("Camera Error", e.getMessage());
+                });
+            }
+        }).start();
     }
 
 }

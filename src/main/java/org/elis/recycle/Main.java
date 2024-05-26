@@ -12,9 +12,9 @@ public class Main {
         Database database = DatabaseFactory.loadDatabaseOrBackup(DatabaseFactory.getDatabaseFile());
 
         MainWindow frame = new MainWindow(config, database);
+        frame.mainScreen();
         frame.setVisible(true);
 
-        frame.searchForProduct();
 
     }
 }
