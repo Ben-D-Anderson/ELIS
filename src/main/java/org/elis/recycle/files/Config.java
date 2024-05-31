@@ -5,15 +5,41 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.elis.recycle.gui.FontContainer;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 @AllArgsConstructor
 @Getter
 public class Config {
+
+    public Optional<Bin> getMaterialBin(String material) {
+        return bins.stream()
+                .filter(bin -> bin.getMaterials().contains(material))
+                .findFirst();
+    }
+
+    @SerializedName("bins")
+    private final List<Bin> bins;
 
     @SerializedName("product_search_screen")
     private final ProductSearchScreenSettings productSearchScreenSettings;
 
     @SerializedName("barcode_scanning_screen")
     private final BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+
+    @AllArgsConstructor
+    @Getter
+    public static class Bin {
+
+        @SerializedName("name")
+        private final String name;
+        @SerializedName("angle")
+        private final double angle;
+        @SerializedName("materials")
+        private final Set<String> materials;
+
+    }
 
     @AllArgsConstructor
     @Getter

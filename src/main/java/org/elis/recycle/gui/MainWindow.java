@@ -23,6 +23,7 @@ public class MainWindow extends JFrame {
     private final Config config;
 
     public MainWindow(Config config, Database database) {
+        super();
         this.config = config;
         this.database = database;
         this.mainMenuScreen = new MainMenuScreen(config, this);
@@ -44,6 +45,7 @@ public class MainWindow extends JFrame {
         if (Toolkit.getDefaultToolkit().isFrameStateSupported(JFrame.MAXIMIZED_BOTH)) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
+        mainMenuScreen.setup(getSize());
 
         if (Toolkit.getDefaultToolkit().isAlwaysOnTopSupported()) {
             setAlwaysOnTop(true);

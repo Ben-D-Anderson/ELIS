@@ -1,4 +1,16 @@
 {
+  "bins": [
+    {
+      "name": "Plastic Bin",
+      "angle": 90,
+      "materials": ["plastic", "other_obscure_material"]
+    },
+    {
+      "name": "Glass Bin",
+      "angle": 270,
+      "materials": ["glass"]
+    }
+  ],
   "product_search_screen": {
     "back_button_font": {
       "name": "SansSerif",
