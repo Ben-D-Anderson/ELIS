@@ -1,6 +1,7 @@
 package org.elis.recycle.files;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
@@ -47,16 +48,29 @@ public class ApplicationFileFactory {
     }
 
     public static <T> T loadFileOrBackup(Class<T> type, Path file, String backupContents) {
-        T database;
+        T value;
         try (BufferedReader reader = Files.newBufferedReader(file)) {
-            database = new Gson().fromJson(reader, type);
-        } catch (IOException e) {
+            value = new GsonBuilder()
+                    .setLenient()
+                    .create().fromJson(reader, type);
+        } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error loading the application file '" + file.getFileName() + "'.");
             System.err.println("Forced to use backup file contents.");
-            database = new Gson().fromJson(backupContents, type);
+            value = new Gson().fromJson(backupContents, type);
         }
-        return database;
+        return value;
+    }
+
+    public static <T> boolean isJsonValid(Class<T> type, String jsonString) {
+        try {
+            T value = new GsonBuilder()
+                    .setLenient()
+                    .create().fromJson(jsonString, type);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

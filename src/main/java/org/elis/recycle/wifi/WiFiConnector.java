@@ -15,10 +15,10 @@ public class WiFiConnector {
     }
 
     private static void initWiFi() throws IOException {
-        Runtime.getRuntime().exec("/usr/sbin/dhclient -r wlan0");
-        Runtime.getRuntime().exec("/usr/sbin/ifdown wlan0");
-        Runtime.getRuntime().exec("/usr/sbin/ifup wlan0");
-        Runtime.getRuntime().exec("/usr/sbin/dhclient -v wlan0");
+        Runtime.getRuntime().exec("/usr/sbin/dhclient -r wlp0s20f3");
+        Runtime.getRuntime().exec("/usr/sbin/ifdown wlp0s20f3");
+        Runtime.getRuntime().exec("/usr/sbin/ifup wlp0s20f3");
+        Runtime.getRuntime().exec("/usr/sbin/dhclient -v wlp0s20f3");
     }
 
     private static final String WPASupplicantContents =

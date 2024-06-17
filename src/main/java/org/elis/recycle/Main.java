@@ -14,5 +14,6 @@ public class Main {
         MainWindow mainWindow = new MainWindow(config, database);
         mainWindow.mainScreen();
         mainWindow.setVisible(true);
+        mainWindow.configScreen();
     }
 }

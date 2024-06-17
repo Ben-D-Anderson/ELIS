@@ -15,6 +15,28 @@
       "materials": ["glass"]
     }
   ],
+  "config_screen": {
+    "text_box_font": {
+      "name": "SansSerif",
+      "style": 0,
+      "size": 32
+    },
+    "cancel_button_font": {
+      "name": "SansSerif",
+      "style": 0,
+      "size": 50
+    },
+    "save_button_font": {
+      "name": "SansSerif",
+      "style": 0,
+      "size": 50
+    },
+    "update_database_button_font": {
+      "name": "SansSerif",
+      "style": 0,
+      "size": 50
+    }
+  },
   "product_search_screen": {
     "back_button_font": {
       "name": "SansSerif",

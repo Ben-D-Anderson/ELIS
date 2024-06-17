@@ -4,9 +4,7 @@ import org.elis.recycle.barcode.CameraException;
 import org.elis.recycle.database.Database;
 import org.elis.recycle.database.Product;
 import org.elis.recycle.files.Config;
-import org.elis.recycle.gui.screens.BarcodeScanningScreen;
-import org.elis.recycle.gui.screens.MainMenuScreen;
-import org.elis.recycle.gui.screens.ProductSearchScreen;
+import org.elis.recycle.gui.screens.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +16,9 @@ public class MainWindow extends JFrame {
 
     private final BarcodeScanningScreen barcodeScanningScreen;
     private final ProductSearchScreen productSearchScreen;
+    private final FullLoadingScreen fullLoadingScreen;
     private final MainMenuScreen mainMenuScreen;
+    private final ConfigScreen configScreen;
     private final Database database;
     private final Config config;
 
@@ -28,6 +28,8 @@ public class MainWindow extends JFrame {
         this.database = database;
         this.mainMenuScreen = new MainMenuScreen(config, this);
         this.barcodeScanningScreen = new BarcodeScanningScreen(config);
+        this.fullLoadingScreen = new FullLoadingScreen();
+        this.configScreen = new ConfigScreen(this, config, database);
         this.productSearchScreen = new ProductSearchScreen(config, database);
 
         try {
@@ -75,6 +77,20 @@ public class MainWindow extends JFrame {
 
     public void mainScreen() {
         setScreen(mainMenuScreen);
+    }
+
+    public void loadingScreen() {
+        setScreen(fullLoadingScreen);
+    }
+
+    public void configScreen() {
+        setScreen(configScreen);
+        try {
+            configScreen.refreshFromConfig();
+        } catch (IOException e) {
+            errorMessage("Error Opening Config", "Failed to open the config file.\n\nError: " + e.getMessage());
+            mainScreen();
+        }
     }
 
     //todo: implement

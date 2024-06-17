@@ -8,7 +8,7 @@ import java.net.URLConnection;
 
 public class DatabaseUpdater {
 
-    private static final String updateURL = ""; //TODO
+    private static final String updateURL = "https://pastebin.com/raw/Swu6tzKB"; //TODO
 
     public static Database attemptUpdate() throws IOException {
         StringBuilder builder = getUpdatePageContents();
@@ -17,16 +17,16 @@ public class DatabaseUpdater {
 
     private static StringBuilder getUpdatePageContents() throws IOException {
         URLConnection urlConnection = new URL(updateURL).openConnection();
-        urlConnection.setConnectTimeout(1000);
-        urlConnection.setReadTimeout(1000);
+        urlConnection.setConnectTimeout(3000);
+        urlConnection.setReadTimeout(3000);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder builder = new StringBuilder();
-        String line;
-        do {
+        String line = reader.readLine();
+        while (line != null) {
+            builder.append(line).append("\n");
             line = reader.readLine();
-            builder.append(line);
-        } while (line != null);
+        }
         return builder;
     }
 

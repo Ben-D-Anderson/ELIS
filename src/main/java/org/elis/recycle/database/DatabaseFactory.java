@@ -20,7 +20,8 @@ public class DatabaseFactory {
     }
 
     public static Database updateDatabase(String newContents) throws IOException {
-        Files.writeString(getDatabaseFile(), newContents, StandardOpenOption.WRITE);
+        Files.writeString(getDatabaseFile(), newContents, StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         return loadDatabaseOrBackup(getDatabaseFile());
     }
 

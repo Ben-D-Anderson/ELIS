@@ -6,6 +6,3 @@ sudo apt install onboard -y
 sudo apt install at-spi2-core -y
 gsettings set org.onboard.window force-to-top true
 
-#wifi
-sudo apt install wpasupplicant
-

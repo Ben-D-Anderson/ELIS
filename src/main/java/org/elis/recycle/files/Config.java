@@ -32,6 +32,9 @@ public class Config {
     @SerializedName("bins")
     private List<Bin> bins;
 
+    @SerializedName("config_screen")
+    private ConfigScreenSettings configScreenSettings;
+
     @SerializedName("product_search_screen")
     private ProductSearchScreenSettings productSearchScreenSettings;
 
@@ -59,6 +62,21 @@ public class Config {
         private final double angle;
         @SerializedName("materials")
         private final Set<String> materials;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class ConfigScreenSettings {
+
+        @SerializedName("text_box_font")
+        private final FontContainer textBoxFont;
+        @SerializedName("update_database_button_font")
+        private final FontContainer updateDatabaseButtonFont;
+        @SerializedName("save_button_font")
+        private final FontContainer saveButtonFont;
+        @SerializedName("cancel_button_font")
+        private final FontContainer cancelButtonFont;
 
     }
 
