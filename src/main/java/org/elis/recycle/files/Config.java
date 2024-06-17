@@ -19,14 +19,35 @@ public class Config {
                 .findFirst();
     }
 
+    public void update(Config newConfig) {
+        this.bins = newConfig.bins;
+        this.barcodeScanningScreenSettings = newConfig.barcodeScanningScreenSettings;
+        this.productSearchScreenSettings = newConfig.productSearchScreenSettings;
+        this.wifiNetwork = newConfig.wifiNetwork;
+    }
+
+    @SerializedName("wifi_network")
+    private WifiNetwork wifiNetwork;
+
     @SerializedName("bins")
-    private final List<Bin> bins;
+    private List<Bin> bins;
 
     @SerializedName("product_search_screen")
-    private final ProductSearchScreenSettings productSearchScreenSettings;
+    private ProductSearchScreenSettings productSearchScreenSettings;
 
     @SerializedName("barcode_scanning_screen")
-    private final BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+    private BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+
+    @AllArgsConstructor
+    @Getter
+    public static class WifiNetwork {
+
+        @SerializedName("name")
+        private final String ssid;
+        @SerializedName("password")
+        private final String password;
+
+    }
 
     @AllArgsConstructor
     @Getter

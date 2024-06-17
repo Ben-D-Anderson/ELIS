@@ -1,6 +1,7 @@
 package org.elis.recycle.database;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +12,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class Database {
 
-    private final List<Product> products;
+    @Getter
+    private String version;
+    private List<Product> products;
+
+    public void update(Database newDatabase) {
+        products.clear();
+        products.addAll(newDatabase.products);
+        version = newDatabase.version;
+    }
 
     public Optional<Product> findProduct(String barcode) {
         return products.stream()

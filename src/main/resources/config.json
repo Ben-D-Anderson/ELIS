@@ -1,4 +1,8 @@
 {
+  "wifi_network": {
+    "name": "",
+    "password": ""
+  },
   "bins": [
     {
       "name": "Plastic Bin",

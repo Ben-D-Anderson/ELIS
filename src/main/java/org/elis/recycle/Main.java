@@ -11,10 +11,8 @@ public class Main {
         Config config = ConfigFactory.loadConfigOrBackup(ConfigFactory.getConfigFile());
         Database database = DatabaseFactory.loadDatabaseOrBackup(DatabaseFactory.getDatabaseFile());
 
-        MainWindow frame = new MainWindow(config, database);
-        frame.mainScreen();
-        frame.setVisible(true);
-
-
+        MainWindow mainWindow = new MainWindow(config, database);
+        mainWindow.mainScreen();
+        mainWindow.setVisible(true);
     }
 }
