@@ -138,6 +138,11 @@ public class ConfigScreen extends JPanel {
             newDatabase = DatabaseUpdater.attemptUpdate();
         } catch (IOException d1) {
             try {
+                if (config.getWifiNetwork().getSsid().isEmpty()) {
+                    return () -> JOptionPane.showMessageDialog(parentFrame,
+                            "Please specify a WiFi network in the config.",
+                            "Error Connecting To WiFi", JOptionPane.ERROR_MESSAGE);
+                }
                 WiFiConnector.connectToNetwork(config.getWifiNetwork());
             } catch (IOException w1) {
                 return () -> JOptionPane.showMessageDialog(parentFrame,
@@ -150,7 +155,7 @@ public class ConfigScreen extends JPanel {
             } catch (IOException d2) {
                 return () -> JOptionPane.showMessageDialog(parentFrame,
                         "WiFi connection has been configured, please reboot your device.",
-                        "Please Reboot Device", JOptionPane.WARNING_MESSAGE);
+                        "Restart Device", JOptionPane.WARNING_MESSAGE);
             }
         }
         String oldDatabaseVersion = database.getVersion();
