@@ -20,6 +20,43 @@
       "scanning_timeout_seconds": 10,
       "mirror_image": true
     },
+    "product_screen": {
+      "product_name_font": {
+        "name": "SansSerif",
+        "style": 0,
+        "size": 50
+      },
+      "step_font": {
+        "name": "SansSerif",
+        "style": 0,
+        "size": 50
+      },
+      "next_step_button_font": {
+        "name": "SansSerif",
+        "style": 0,
+        "size": 80
+      },
+      "dispose_button_font": {
+        "name": "SansSerif",
+        "style": 0,
+        "size": 80
+      },
+      "finish_button_font": {
+        "name": "SansSerif",
+        "style": 0,
+        "size": 80
+      },
+      "begin_recycle_button_font": {
+        "name": "SansSerif",
+        "style": 0,
+        "size": 150
+      },
+      "back_button_font": {
+        "name": "SansSerif",
+        "style": 0,
+        "size": 100
+      }
+    },
     "main_menu_screen": {
       "button_shrink_factor": 5
     },

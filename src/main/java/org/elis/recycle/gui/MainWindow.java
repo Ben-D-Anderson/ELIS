@@ -94,12 +94,8 @@ public class MainWindow extends JFrame {
         }
     }
 
-    //todo: implement
     private void productScreen(Product product) {
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel("Product Information For Barcode: " + product.getBarcode());
-        panel.add(label);
-        setScreen(panel);
+        setScreen(new ProductScreen(this, config, product));
     }
 
     public void searchForProduct() {

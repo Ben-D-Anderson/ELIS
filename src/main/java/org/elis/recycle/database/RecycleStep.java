@@ -12,5 +12,7 @@ public class RecycleStep {
     private final String instruction;
     @SerializedName("requires_waste_disposal")
     private final boolean requiresWasteDisposal;
+    @SerializedName("material_to_dispose")
+    private final String materialToDispose;
 
 }

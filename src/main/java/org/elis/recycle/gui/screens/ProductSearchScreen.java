@@ -37,6 +37,7 @@ public class ProductSearchScreen extends JPanel {
                 .getProductSearchScreenSettings()
                 .getBackButtonFont().asFont());
         backButton.setFocusPainted(false);
+        backButton.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1, false));
         backButton.addActionListener(actionEvent -> returnToMenu());
 
         textInputField.addMouseListener(new MouseAdapter() {
@@ -57,7 +58,8 @@ public class ProductSearchScreen extends JPanel {
                 loadOptions(database.findProducts(searchQuery));
             }
         });
-        textInputField.setBorder(BorderFactory.createCompoundBorder(textInputField.getBorder(),
+        textInputField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1, false),
                 BorderFactory.createEmptyBorder(5, 15, 5, 5)));
         textInputField.setFont(config.getUserInterfaceSettings()
                 .getProductSearchScreenSettings()

@@ -39,6 +39,9 @@ public class Config {
     @Getter
     public static class UserInterfaceSettings {
 
+        @SerializedName("product_screen")
+        private ProductScreenSettings productScreenSettings;
+
         @SerializedName("main_menu_screen")
         private MainMenuScreenSettings mainMenuScreenSettings;
 
@@ -53,6 +56,27 @@ public class Config {
 
         @SerializedName("barcode_scanning_screen")
         private BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class ProductScreenSettings {
+
+        @SerializedName("step_font")
+        private final FontContainer stepFont;
+        @SerializedName("product_name_font")
+        private final FontContainer productNameFont;
+        @SerializedName("begin_recycle_button_font")
+        private final FontContainer beginRecycleButtonFont;
+        @SerializedName("back_button_font")
+        private final FontContainer backButtonFont;
+        @SerializedName("dispose_button_font")
+        private final FontContainer disposeButtonFont;
+        @SerializedName("next_step_button_font")
+        private final FontContainer nextStepButtonFont;
+        @SerializedName("finish_button_font")
+        private final FontContainer finishButtonFont;
 
     }
 
