@@ -39,6 +39,9 @@ public class Config {
     @Getter
     public static class UserInterfaceSettings {
 
+        @SerializedName("main_menu_screen")
+        private MainMenuScreenSettings mainMenuScreenSettings;
+
         @SerializedName("loading_screen")
         private LoadingScreenSettings loadingScreenSettings;
 
@@ -50,6 +53,15 @@ public class Config {
 
         @SerializedName("barcode_scanning_screen")
         private BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class MainMenuScreenSettings {
+
+        @SerializedName("button_shrink_factor")
+        private final int buttonShrinkFactor;
 
     }
 

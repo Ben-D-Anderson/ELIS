@@ -16,7 +16,6 @@ public class MainMenuScreen extends JPanel {
 
     private final Config config;
     private final MainWindow mainWindow;
-    private static final int IMAGE_FACTOR_SIZE = 6;
 
     public MainMenuScreen(Config config, MainWindow mainWindow) {
         super();
@@ -33,8 +32,10 @@ public class MainMenuScreen extends JPanel {
             scanButton.setIcon(new ImageIcon(
                     ImageIO.read(barcodeImageURL)
                             .getScaledInstance(
-                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
-                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
+                                    (int) (screenSize.getWidth() / config.getUserInterfaceSettings()
+                                            .getMainMenuScreenSettings().getButtonShrinkFactor()),
+                                    (int) (screenSize.getWidth() / config.getUserInterfaceSettings()
+                                            .getMainMenuScreenSettings().getButtonShrinkFactor()),
                                     Image.SCALE_SMOOTH)
             ));
             scanButton.setOpaque(false);
@@ -56,8 +57,10 @@ public class MainMenuScreen extends JPanel {
             searchButton.setIcon(new ImageIcon(
                     ImageIO.read(searchImageURL)
                             .getScaledInstance(
-                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
-                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
+                                    (int) (screenSize.getWidth() / config.getUserInterfaceSettings()
+                                            .getMainMenuScreenSettings().getButtonShrinkFactor()),
+                                    (int) (screenSize.getWidth() / config.getUserInterfaceSettings()
+                                            .getMainMenuScreenSettings().getButtonShrinkFactor()),
                                     Image.SCALE_DEFAULT)
             ));
             searchButton.setOpaque(false);
@@ -78,8 +81,10 @@ public class MainMenuScreen extends JPanel {
             settingsButton.setIcon(new ImageIcon(
                     ImageIO.read(settingsImageURL)
                             .getScaledInstance(
-                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
-                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
+                                    (int) (screenSize.getWidth() / config.getUserInterfaceSettings()
+                                            .getMainMenuScreenSettings().getButtonShrinkFactor()),
+                                    (int) (screenSize.getWidth() / config.getUserInterfaceSettings()
+                                            .getMainMenuScreenSettings().getButtonShrinkFactor()),
                                     Image.SCALE_SMOOTH)
             ));
             settingsButton.setOpaque(false);
@@ -95,9 +100,11 @@ public class MainMenuScreen extends JPanel {
         });
 
         add(settingsButton);
-        add(Box.createHorizontalStrut((int) (screenSize.getWidth() / 12)));
+        add(Box.createHorizontalStrut((int) (screenSize.getWidth() / (config.getUserInterfaceSettings()
+                .getMainMenuScreenSettings().getButtonShrinkFactor() * 3))));
         add(searchButton);
-        add(Box.createHorizontalStrut((int) (screenSize.getWidth() / 12)));
+        add(Box.createHorizontalStrut((int) (screenSize.getWidth() / (config.getUserInterfaceSettings()
+                .getMainMenuScreenSettings().getButtonShrinkFactor() * 3))));
         add(scanButton);
     }
 

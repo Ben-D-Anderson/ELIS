@@ -20,6 +20,9 @@
       "scanning_timeout_seconds": 10,
       "mirror_image": true
     },
+    "main_menu_screen": {
+      "button_shrink_factor": 5
+    },
     "loading_screen": {
       "text_font": {
         "name": "SansSerif",

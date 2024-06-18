@@ -20,7 +20,8 @@ public class ConfigFactory {
 
     public static Optional<Config> updateConfig(String newContents) {
         try {
-            Files.writeString(getConfigFile(), newContents, StandardOpenOption.WRITE);
+            Files.writeString(getConfigFile(), newContents, StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
             return Optional.of(loadConfigOrBackup(getConfigFile()));
         } catch (IOException e) {
             return Optional.empty();

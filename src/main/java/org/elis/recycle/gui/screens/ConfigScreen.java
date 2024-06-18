@@ -192,7 +192,7 @@ public class ConfigScreen extends JPanel {
         }
         ConfigFactory.updateConfig(textArea.getText()).ifPresent(config::update);
         JOptionPane.showMessageDialog(this,
-                "The config has been saved and applied.",
+                "The config has been saved.",
                 "Successfully Updated Config", JOptionPane.INFORMATION_MESSAGE);
         saveButton.setEnabled(false);
         updateDatabaseButton.setEnabled(true);

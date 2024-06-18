@@ -41,14 +41,16 @@ public class BarcodeScanner {
         imageProcessor.start();
 
         LocalDateTime timeoutDateTime = LocalDateTime.now().plus(timeout);
-        while (LocalDateTime.now().isBefore(timeoutDateTime)
-                && !barcodeFound.get()) {
-            Optional<BufferedImage> capturedImageOptional = camera.captureImage();
-            if (capturedImageOptional.isEmpty()) continue;
+        try {
+            while (LocalDateTime.now().isBefore(timeoutDateTime)
+                    && !barcodeFound.get()) {
+                Optional<BufferedImage> capturedImageOptional = camera.captureImage();
+                if (capturedImageOptional.isEmpty()) continue;
 
-            imageProcessor.setImageToProcess(capturedImageOptional.get());
-            liveImageViewer.accept(capturedImageOptional.get());
-        }
+                imageProcessor.setImageToProcess(capturedImageOptional.get());
+                liveImageViewer.accept(capturedImageOptional.get());
+            }
+        } catch (Exception ignored) {}
 
         imageProcessor.close();
         camera.close();
