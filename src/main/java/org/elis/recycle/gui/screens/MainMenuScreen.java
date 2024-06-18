@@ -16,6 +16,7 @@ public class MainMenuScreen extends JPanel {
 
     private final Config config;
     private final MainWindow mainWindow;
+    private static final int IMAGE_FACTOR_SIZE = 6;
 
     public MainMenuScreen(Config config, MainWindow mainWindow) {
         super();
@@ -32,8 +33,8 @@ public class MainMenuScreen extends JPanel {
             scanButton.setIcon(new ImageIcon(
                     ImageIO.read(barcodeImageURL)
                             .getScaledInstance(
-                                    (int) (screenSize.getWidth() / 4),
-                                    (int) (screenSize.getWidth() / 4),
+                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
+                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
                                     Image.SCALE_SMOOTH)
             ));
             scanButton.setOpaque(false);
@@ -55,8 +56,8 @@ public class MainMenuScreen extends JPanel {
             searchButton.setIcon(new ImageIcon(
                     ImageIO.read(searchImageURL)
                             .getScaledInstance(
-                                    (int) (screenSize.getWidth() / 4),
-                                    (int) (screenSize.getWidth() / 4),
+                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
+                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
                                     Image.SCALE_DEFAULT)
             ));
             searchButton.setOpaque(false);
@@ -71,8 +72,32 @@ public class MainMenuScreen extends JPanel {
             }
         });
 
+        JLabel settingsButton = new JLabel();
+        try {
+            URL settingsImageURL = Objects.requireNonNull(getClass().getResource("/settings_button.png"));
+            settingsButton.setIcon(new ImageIcon(
+                    ImageIO.read(settingsImageURL)
+                            .getScaledInstance(
+                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
+                                    (int) (screenSize.getWidth() / IMAGE_FACTOR_SIZE),
+                                    Image.SCALE_SMOOTH)
+            ));
+            settingsButton.setOpaque(false);
+        } catch (IOException | NullPointerException e) {
+            settingsButton.setText("Settings");
+        }
+        settingsButton.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true));
+        settingsButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                SwingUtilities.invokeLater(mainWindow::configScreen);
+            }
+        });
+
+        add(settingsButton);
+        add(Box.createHorizontalStrut((int) (screenSize.getWidth() / 12)));
         add(searchButton);
-        add(Box.createHorizontalStrut((int) (screenSize.getWidth() / 8)));
+        add(Box.createHorizontalStrut((int) (screenSize.getWidth() / 12)));
         add(scanButton);
     }
 
