@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.elis.recycle.gui.FontContainer;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,10 +21,9 @@ public class Config {
     }
 
     public void update(Config newConfig) {
-        this.bins = newConfig.bins;
-        this.barcodeScanningScreenSettings = newConfig.barcodeScanningScreenSettings;
-        this.productSearchScreenSettings = newConfig.productSearchScreenSettings;
         this.wifiNetwork = newConfig.wifiNetwork;
+        this.bins = newConfig.bins;
+        this.userInterfaceSettings = newConfig.userInterfaceSettings;
     }
 
     @SerializedName("wifi_network")
@@ -32,18 +32,39 @@ public class Config {
     @SerializedName("bins")
     private List<Bin> bins;
 
-    @SerializedName("config_screen")
-    private ConfigScreenSettings configScreenSettings;
-
-    @SerializedName("product_search_screen")
-    private ProductSearchScreenSettings productSearchScreenSettings;
-
-    @SerializedName("barcode_scanning_screen")
-    private BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+    @SerializedName("user_interface")
+    private UserInterfaceSettings userInterfaceSettings;
 
     @AllArgsConstructor
     @Getter
-    public static class WifiNetwork {
+    public static class UserInterfaceSettings {
+
+        @SerializedName("loading_screen")
+        private LoadingScreenSettings loadingScreenSettings;
+
+        @SerializedName("config_screen")
+        private ConfigScreenSettings configScreenSettings;
+
+        @SerializedName("product_search_screen")
+        private ProductSearchScreenSettings productSearchScreenSettings;
+
+        @SerializedName("barcode_scanning_screen")
+        private BarcodeScanningScreenSettings barcodeScanningScreenSettings;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class LoadingScreenSettings {
+
+        @SerializedName("text_font")
+        private final FontContainer textFont;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class WifiNetwork implements Serializable {
 
         @SerializedName("name")
         private final String ssid;

@@ -23,7 +23,9 @@ public class ConfigScreen extends JPanel {
     private final JScrollPane scrollPane;
     private final JButton updateDatabaseButton = new JButton("Update Database");
     private final JButton saveButton = new JButton("Save");
+    private final JButton cancelButton = new JButton("Cancel");
     private final VirtualKeyboard virtualKeyboard;
+    private String oldConfigString;
 
     public ConfigScreen(MainWindow mainWindow, Config config, Database database) {
         super();
@@ -33,7 +35,9 @@ public class ConfigScreen extends JPanel {
         this.virtualKeyboard = new VirtualKeyboard();
         final ConfigScreen thisInstance = this;
 
-        textArea.setFont(config.getConfigScreenSettings().getTextBoxFont().asFont());
+        textArea.setFont(config.getUserInterfaceSettings()
+                .getConfigScreenSettings()
+                .getTextBoxFont().asFont());
 
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -53,7 +57,7 @@ public class ConfigScreen extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (!updateDatabaseButton.isEnabled()) return;
-                mainWindow.loadingScreen();
+                mainWindow.loadingScreen("Downloading Database...");
                 new Thread(() -> {
                     Runnable toInvoke = connectToWifiAndUpdateDatabase(mainWindow, config);
                     SwingUtilities.invokeLater(() -> {
@@ -84,12 +88,16 @@ public class ConfigScreen extends JPanel {
         });
         textArea.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                updateDatabaseButton.setEnabled(false);
-                saveButton.setEnabled(true);
+            public void keyReleased(KeyEvent e) {
+                if (!textArea.getText().equals(oldConfigString)) {
+                    updateDatabaseButton.setEnabled(false);
+                    saveButton.setEnabled(true);
+                } else {
+                    updateDatabaseButton.setEnabled(true);
+                    saveButton.setEnabled(false);
+                }
             }
         });
-        JButton cancelButton = new JButton("Cancel");
         cancelButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -102,9 +110,15 @@ public class ConfigScreen extends JPanel {
         saveButton.setFocusPainted(false);
         cancelButton.setFocusPainted(false);
 
-        updateDatabaseButton.setFont(config.getConfigScreenSettings().getUpdateDatabaseButtonFont().asFont());
-        saveButton.setFont(config.getConfigScreenSettings().getSaveButtonFont().asFont());
-        cancelButton.setFont(config.getConfigScreenSettings().getCancelButtonFont().asFont());
+        updateDatabaseButton.setFont(config.getUserInterfaceSettings()
+                .getConfigScreenSettings()
+                .getUpdateDatabaseButtonFont().asFont());
+        saveButton.setFont(config.getUserInterfaceSettings()
+                .getConfigScreenSettings()
+                .getSaveButtonFont().asFont());
+        cancelButton.setFont(config.getUserInterfaceSettings()
+                .getConfigScreenSettings()
+                .getCancelButtonFont().asFont());
 
         buttonSection.add(updateDatabaseButton);
         buttonSection.add(saveButton);
@@ -118,7 +132,7 @@ public class ConfigScreen extends JPanel {
         add(buttonSection, bottom);
     }
 
-    private Runnable connectToWifiAndUpdateDatabase(JFrame parentFrame, Config config) {
+    private Runnable connectToWifiAndUpdateDatabase(MainWindow parentFrame, Config config) {
         Database newDatabase;
         try {
             newDatabase = DatabaseUpdater.attemptUpdate();
@@ -135,18 +149,16 @@ public class ConfigScreen extends JPanel {
                 newDatabase = DatabaseUpdater.attemptUpdate();
             } catch (IOException d2) {
                 return () -> JOptionPane.showMessageDialog(parentFrame,
-                        "Failed to load new database." +
-                                "\n\nError: " + d2,
-                        "Failed Loading Database", JOptionPane.ERROR_MESSAGE);
+                        "WiFi connection has been configured, please reboot your device.",
+                        "Please Reboot Device", JOptionPane.WARNING_MESSAGE);
             }
         }
         String oldDatabaseVersion = database.getVersion();
         String newDatabaseVersion = newDatabase.getVersion();
         if (oldDatabaseVersion.equals(newDatabaseVersion)) {
             return () -> JOptionPane.showMessageDialog(parentFrame,
-                    "Database was not updated because the remote database has the same version " +
-                            "as the local database (" + oldDatabaseVersion + ").",
-                    "Database Not Updated", JOptionPane.WARNING_MESSAGE);
+                    "Database is already up to date.",
+                    "Database Not Updated", JOptionPane.INFORMATION_MESSAGE);
         }
         database.update(newDatabase);
         return () -> JOptionPane.showMessageDialog(parentFrame,
@@ -157,7 +169,11 @@ public class ConfigScreen extends JPanel {
     public void refreshFromConfig() throws IOException {
         String configContent = Files.readString(ConfigFactory.getConfigFile());
         textArea.setText(configContent);
-        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
+        oldConfigString = configContent;
+        SwingUtilities.invokeLater(() -> {
+            cancelButton.requestFocus();
+            scrollPane.getVerticalScrollBar().setValue(0);
+        });
         updateDatabaseButton.setEnabled(true);
         saveButton.setEnabled(false);
     }

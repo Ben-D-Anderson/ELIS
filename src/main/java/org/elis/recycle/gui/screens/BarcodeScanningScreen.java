@@ -89,7 +89,9 @@ public class BarcodeScanningScreen extends JPanel {
             synchronized (imageLock) {
                 if (image != null) {
                     g.drawImage(image, getWidth(), 0,
-                            config.getBarcodeScanningScreenSettings().isMirrorImage() ? -getWidth() : getWidth(),
+                            config.getUserInterfaceSettings()
+                                    .getBarcodeScanningScreenSettings()
+                                    .isMirrorImage() ? -getWidth() : getWidth(),
                             getHeight(), null);
                 }
             }

@@ -15,21 +15,21 @@ public class WiFiConnector {
     }
 
     private static void initWiFi() throws IOException {
-        Runtime.getRuntime().exec("/usr/sbin/dhclient -r wlp0s20f3");
-        Runtime.getRuntime().exec("/usr/sbin/ifdown wlp0s20f3");
-        Runtime.getRuntime().exec("/usr/sbin/ifup wlp0s20f3");
-        Runtime.getRuntime().exec("/usr/sbin/dhclient -v wlp0s20f3");
+        Runtime.getRuntime().exec("/usr/sbin/dhclient -r wlan0");
+        Runtime.getRuntime().exec("/usr/sbin/ifdown wlan0");
+        Runtime.getRuntime().exec("/usr/sbin/ifup wlan0");
+        Runtime.getRuntime().exec("/usr/sbin/dhclient -v wlan0");
     }
 
     private static final String WPASupplicantContents =
             "country=gb\n" +
             "update_config=1\n" +
-            "ctrl_interface=/var/run/wpa_supplicant\n" +
+            "ctrl_interface=/var/run/wpa_supplicant GROUP=netdev\n" +
             "\n" +
             "network={\n" +
             " scan_ssid=1\n" +
             " ssid=\"{SSID}\"\n" +
-            " psd=\"{PASSWORD}\"\n" +
+            " psk=\"{PASSWORD}\"\n" +
             "}";
     private static void writeWPASupplicant(Config.WifiNetwork network) throws IOException {
         String configuredWPASupplicantContents = WPASupplicantContents

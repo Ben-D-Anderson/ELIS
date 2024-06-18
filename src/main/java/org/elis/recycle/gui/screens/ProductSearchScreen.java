@@ -33,7 +33,9 @@ public class ProductSearchScreen extends JPanel {
         setLayout(new GridBagLayout());
 
         JButton backButton = new JButton("Back");
-        backButton.setFont(config.getProductSearchScreenSettings().getBackButtonFont().asFont());
+        backButton.setFont(config.getUserInterfaceSettings()
+                .getProductSearchScreenSettings()
+                .getBackButtonFont().asFont());
         backButton.setFocusPainted(false);
         backButton.addActionListener(actionEvent -> returnToMenu());
 
@@ -57,7 +59,9 @@ public class ProductSearchScreen extends JPanel {
         });
         textInputField.setBorder(BorderFactory.createCompoundBorder(textInputField.getBorder(),
                 BorderFactory.createEmptyBorder(5, 15, 5, 5)));
-        textInputField.setFont(config.getProductSearchScreenSettings().getInputBoxFont().asFont());
+        textInputField.setFont(config.getUserInterfaceSettings()
+                .getProductSearchScreenSettings()
+                .getInputBoxFont().asFont());
 
         GridBagConstraints left = new GridBagConstraints();
         left.anchor = GridBagConstraints.NORTHWEST;
@@ -104,7 +108,9 @@ public class ProductSearchScreen extends JPanel {
             nameConstraints.fill = GridBagConstraints.BOTH;
 
             JLabel productNameLabel = new JLabel(product.getName());
-            productNameLabel.setFont(config.getProductSearchScreenSettings().getProductOptionFont().asFont());
+            productNameLabel.setFont(config.getUserInterfaceSettings()
+                    .getProductSearchScreenSettings()
+                    .getProductOptionFont().asFont());
 
             add(productNameLabel, nameConstraints);
             addMouseListener(new MouseAdapter() {

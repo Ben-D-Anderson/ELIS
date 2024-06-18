@@ -28,7 +28,7 @@ public class MainWindow extends JFrame {
         this.database = database;
         this.mainMenuScreen = new MainMenuScreen(config, this);
         this.barcodeScanningScreen = new BarcodeScanningScreen(config);
-        this.fullLoadingScreen = new FullLoadingScreen();
+        this.fullLoadingScreen = new FullLoadingScreen(config);
         this.configScreen = new ConfigScreen(this, config, database);
         this.productSearchScreen = new ProductSearchScreen(config, database);
 
@@ -79,7 +79,8 @@ public class MainWindow extends JFrame {
         setScreen(mainMenuScreen);
     }
 
-    public void loadingScreen() {
+    public void loadingScreen(String loadingText) {
+        fullLoadingScreen.setLoadingText(loadingText);
         setScreen(fullLoadingScreen);
     }
 
@@ -117,7 +118,9 @@ public class MainWindow extends JFrame {
         new Thread(() -> {
             try {
                 barcodeScanningScreen.start(
-                        Duration.ofSeconds(config.getBarcodeScanningScreenSettings().getScanningTimeoutSeconds()),
+                        Duration.ofSeconds(config.getUserInterfaceSettings()
+                                .getBarcodeScanningScreenSettings()
+                                .getScanningTimeoutSeconds()),
                         //barcode callback
                         barcode -> {
                             Optional<Product> productOptional = database.findProduct(barcode);
