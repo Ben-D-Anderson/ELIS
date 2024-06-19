@@ -102,6 +102,11 @@ public class ProductSearchScreen extends JPanel {
             setLayout(new GridBagLayout());
             setBorder(BorderFactory.createCompoundBorder(getBorder(),
                     BorderFactory.createEmptyBorder(5, 15, 5, 5)));
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.WHITE),
+                    getBorder()));
+            setBackground(getColorByName(config.getUserInterfaceSettings()
+                    .getProductSearchScreenSettings().getProductOptionBackground()));
 
             GridBagConstraints nameConstraints = new GridBagConstraints();
             nameConstraints.anchor = GridBagConstraints.WEST;
@@ -113,6 +118,8 @@ public class ProductSearchScreen extends JPanel {
             productNameLabel.setFont(config.getUserInterfaceSettings()
                     .getProductSearchScreenSettings()
                     .getProductOptionFont().asFont());
+            productNameLabel.setForeground(getColorByName(config.getUserInterfaceSettings()
+                    .getProductSearchScreenSettings().getProductOptionForeground()));
 
             add(productNameLabel, nameConstraints);
             addMouseListener(new MouseAdapter() {
@@ -121,6 +128,14 @@ public class ProductSearchScreen extends JPanel {
                     stop(product);
                 }
             });
+        }
+        private Color getColorByName(String name) {
+            try {
+                return (Color)Color.class.getField(name.toUpperCase()).get(null);
+            } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 

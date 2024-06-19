@@ -5,6 +5,7 @@ import org.elis.recycle.database.DatabaseUpdater;
 import org.elis.recycle.files.ApplicationFileFactory;
 import org.elis.recycle.files.Config;
 import org.elis.recycle.files.ConfigFactory;
+import org.elis.recycle.gui.CustomOptionPane;
 import org.elis.recycle.gui.MainWindow;
 import org.elis.recycle.gui.VirtualKeyboard;
 import org.elis.recycle.wifi.WiFiConnector;
@@ -73,7 +74,7 @@ public class ConfigScreen extends JPanel {
                 try {
                     virtualKeyboard.start();
                 } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(thisInstance,
+                    CustomOptionPane.showMessageDialog(config, thisInstance,
                             "Failed to open on-screen keyboard.",
                             "Virtual Keyboard Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -139,13 +140,13 @@ public class ConfigScreen extends JPanel {
         } catch (IOException d1) {
             try {
                 if (config.getWifiNetwork().getSsid().isEmpty()) {
-                    return () -> JOptionPane.showMessageDialog(parentFrame,
+                    return () -> CustomOptionPane.showMessageDialog(config, parentFrame,
                             "Please specify a WiFi network in the config.",
                             "Error Connecting To WiFi", JOptionPane.ERROR_MESSAGE);
                 }
                 WiFiConnector.connectToNetwork(config.getWifiNetwork());
             } catch (IOException w1) {
-                return () -> JOptionPane.showMessageDialog(parentFrame,
+                return () -> CustomOptionPane.showMessageDialog(config, parentFrame,
                         "Failed to connect to WiFi network with name '" + config.getWifiNetwork().getSsid() + "'." +
                                 "\n\nError: " + w1,
                         "Error Connecting To WiFi", JOptionPane.ERROR_MESSAGE);
@@ -153,7 +154,7 @@ public class ConfigScreen extends JPanel {
             try {
                 newDatabase = DatabaseUpdater.attemptUpdate();
             } catch (IOException d2) {
-                return () -> JOptionPane.showMessageDialog(parentFrame,
+                return () -> CustomOptionPane.showMessageDialog(config, parentFrame,
                         "WiFi connection has been configured, please reboot your device.",
                         "Restart Device", JOptionPane.WARNING_MESSAGE);
             }
@@ -161,12 +162,12 @@ public class ConfigScreen extends JPanel {
         String oldDatabaseVersion = database.getVersion();
         String newDatabaseVersion = newDatabase.getVersion();
         if (oldDatabaseVersion.equals(newDatabaseVersion)) {
-            return () -> JOptionPane.showMessageDialog(parentFrame,
+            return () -> CustomOptionPane.showMessageDialog(config, parentFrame,
                     "Database is already up to date.",
                     "Database Not Updated", JOptionPane.INFORMATION_MESSAGE);
         }
         database.update(newDatabase);
-        return () -> JOptionPane.showMessageDialog(parentFrame,
+        return () -> CustomOptionPane.showMessageDialog(config, parentFrame,
                     "Database updated from version " + oldDatabaseVersion + " to " + newDatabaseVersion,
                     "Successfully Updated Database", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -185,13 +186,13 @@ public class ConfigScreen extends JPanel {
 
     public void save() {
         if (!ApplicationFileFactory.isJsonValid(Config.class, textArea.getText())) {
-            JOptionPane.showMessageDialog(this,
+            CustomOptionPane.showMessageDialog(config, this,
                     "The config has errors in it which makes it impossible to parse.",
                     "Failed To Updated Config", JOptionPane.ERROR_MESSAGE);
             return;
         }
         ConfigFactory.updateConfig(textArea.getText()).ifPresent(config::update);
-        JOptionPane.showMessageDialog(this,
+        CustomOptionPane.showMessageDialog(config, this,
                 "The config has been saved.",
                 "Successfully Updated Config", JOptionPane.INFORMATION_MESSAGE);
         saveButton.setEnabled(false);

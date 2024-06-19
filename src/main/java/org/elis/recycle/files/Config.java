@@ -57,6 +57,27 @@ public class Config {
         @SerializedName("barcode_scanning_screen")
         private BarcodeScanningScreenSettings barcodeScanningScreenSettings;
 
+        @SerializedName("pop_ups")
+        private PopUpSettings popUpSettings;
+
+        @SerializedName("use_system_theme")
+        private boolean useSystemTheme;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class PopUpSettings {
+
+        @SerializedName("height")
+        private final int height;
+        @SerializedName("width")
+        private final int width;
+        @SerializedName("message_font_size")
+        private final int messageFontSize;
+        @SerializedName("button_font_size")
+        private final int buttonFontSize;
+
     }
 
     @AllArgsConstructor
@@ -158,6 +179,10 @@ public class Config {
         private final FontContainer inputBoxFont;
         @SerializedName("product_option_font")
         private final FontContainer productOptionFont;
+        @SerializedName("product_option_background_override")
+        private final String productOptionBackground;
+        @SerializedName("product_option_foreground_override")
+        private final String productOptionForeground;
 
     }
 

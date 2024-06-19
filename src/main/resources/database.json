@@ -6,10 +6,14 @@
       "name": "H&B Multivitamins",
       "steps": [
         {
-          "instruction": "",
+          "instruction": "Place the plastic on the disposal plate",
           "requires_waste_disposal": true,
           "material_to_dispose": "plastic"
         },
+        {
+          "instruction": "Be proud of yourself",
+          "requires_waste_disposal": false
+        }
       ]
     }
   ]

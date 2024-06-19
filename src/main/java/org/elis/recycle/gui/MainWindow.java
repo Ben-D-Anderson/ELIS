@@ -32,15 +32,21 @@ public class MainWindow extends JFrame {
         this.configScreen = new ConfigScreen(this, config, database);
         this.productSearchScreen = new ProductSearchScreen(config, database);
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                 UnsupportedLookAndFeelException ignored) {
+        if (config.getUserInterfaceSettings().isUseSystemTheme()) {
             try {
-                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                     UnsupportedLookAndFeelException ignoredAgain) {}
+                    UnsupportedLookAndFeelException ignored) {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                         UnsupportedLookAndFeelException ignoredAgain) {}
+            }
         }
+
+        UIManager.put("OptionPane.minimumSize", new Dimension(
+                config.getUserInterfaceSettings().getPopUpSettings().getWidth(),
+                config.getUserInterfaceSettings().getPopUpSettings().getHeight()));
 
         setLocationRelativeTo(null);
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -72,7 +78,7 @@ public class MainWindow extends JFrame {
     }
 
     private void errorMessage(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+        CustomOptionPane.showMessageDialog(config, this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     public void mainScreen() {

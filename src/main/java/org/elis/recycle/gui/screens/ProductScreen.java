@@ -3,6 +3,7 @@ package org.elis.recycle.gui.screens;
 import org.elis.recycle.database.Product;
 import org.elis.recycle.database.RecycleStep;
 import org.elis.recycle.files.Config;
+import org.elis.recycle.gui.CustomOptionPane;
 import org.elis.recycle.gui.MainWindow;
 
 import javax.swing.*;
@@ -24,7 +25,10 @@ public class ProductScreen extends JPanel {
     private final JButton disposeButton = new JButton("<html><center>Dispose<br />Item</center></html>");
     private final JButton beginRecycleButton = new JButton("<html><center>Begin<br />Recycle</center></html>");
     private final JLabel currentStepInstructionLabel = new JLabel();
+    private final Component spacer = Box.createHorizontalStrut(50);
     private int currentStepIndex = 0;
+    private long lastClick = 0L;
+    private static final long CLICK_COOLDOWN_MILLIS = 200L;
     private StepState state = StepState.BEFORE;
 
     enum StepState {
@@ -65,14 +69,18 @@ public class ProductScreen extends JPanel {
         centre.weighty = 1;
         centre.weightx = 1;
         GridBagConstraints leftHalf = new GridBagConstraints();
-        leftHalf.anchor = GridBagConstraints.WEST;
         leftHalf.fill = GridBagConstraints.BOTH;
+        leftHalf.anchor = GridBagConstraints.WEST;
+        leftHalf.gridy = 1;
         leftHalf.gridx = 1;
-        leftHalf.weightx = 1;
+        leftHalf.weighty = 1;
+        leftHalf.weightx = 1.5;
         GridBagConstraints rightHalf = new GridBagConstraints();
-        rightHalf.anchor = GridBagConstraints.EAST;
         rightHalf.fill = GridBagConstraints.BOTH;
+        rightHalf.anchor = GridBagConstraints.EAST;
+        rightHalf.gridy = 1;
         rightHalf.gridx = 2;
+        rightHalf.weighty = 1;
         rightHalf.weightx = 1;
 
         JButton backButton = new JButton("Back");
@@ -105,10 +113,48 @@ public class ProductScreen extends JPanel {
         disposeButton.setFocusPainted(false);
         finishButton.setFocusPainted(false);
         nextStepButton.setFocusPainted(false);
+        disposeButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true),
+                BorderFactory.createEmptyBorder(25, 25, 25, 25)));
+        finishButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true),
+                BorderFactory.createEmptyBorder(25, 25, 25, 25)));
+        nextStepButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1, true),
+                BorderFactory.createEmptyBorder(25, 25, 25, 25)));
 
+        disposeButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (!disposeButton.isEnabled()) return;
+
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClick < CLICK_COOLDOWN_MILLIS) {
+                    return;
+                }
+                lastClick = currentTime;
+                disposeClicked(config);
+            }
+        });
+        nextStepButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClick < CLICK_COOLDOWN_MILLIS) {
+                   return;
+                }
+                lastClick = currentTime;
+                nextStep();
+            }
+        });
         finishButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClick < CLICK_COOLDOWN_MILLIS) {
+                    return;
+                }
+                lastClick = currentTime;
                 returnToMenu();
             }
         });
@@ -122,18 +168,41 @@ public class ProductScreen extends JPanel {
         beginRecycleButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClick < CLICK_COOLDOWN_MILLIS) {
+                    return;
+                }
+                lastClick = currentTime;
                 stepsPanel.removeAll();
                 state = StepState.DURING;
-                actionButtonsPanel.add(disposeButton, leftHalf);
-                actionButtonsPanel.add(nextStepButton, rightHalf);
-                stepsPanel.add(currentStepInstructionLabel, leftHalf);
+                actionButtonsPanel.add(disposeButton);
+                actionButtonsPanel.add(spacer);
+                actionButtonsPanel.add(nextStepButton);
+                JPanel currentStepInstructionPanel = new JPanel(new GridBagLayout());
+                currentStepInstructionPanel.add(currentStepInstructionLabel);
+                stepsPanel.add(currentStepInstructionPanel, leftHalf);
                 stepsPanel.add(actionButtonsPanel, rightHalf);
+
                 nextStep();
             }
         });
         stepsPanel.add(beginRecycleButton, centre);
 
         add(stepsPanel, remainder);
+    }
+
+    private void disposeClicked(Config config) {
+        Optional<RecycleStep> currentRecycleStepOptional = getCurrentStep();
+        if (currentRecycleStepOptional.isEmpty()) return;
+        RecycleStep recycleStep = currentRecycleStepOptional.get();
+        if (!recycleStep.isRequiresWasteDisposal()) return;
+
+        boolean confirmed = CustomOptionPane.showConfirmDialog(config, this,
+                "WARNING: The tilting table is going to move.\n" +
+                "Are all body parts clear of the platform?", "Tilting Table Warning");
+        System.out.println(confirmed);
+        if (!confirmed) return;
+        String material = recycleStep.getMaterialToDispose();
     }
 
     private void nextStep() {
@@ -146,10 +215,10 @@ public class ProductScreen extends JPanel {
             state = StepState.AFTER;
             currentStepInstructionLabel.setText("Finished Recycling Product");
             actionButtonsPanel.remove(disposeButton);
+            actionButtonsPanel.remove(spacer);
             actionButtonsPanel.remove(nextStepButton);
 
             GridBagConstraints centre = new GridBagConstraints();
-            centre.fill = GridBagConstraints.BOTH;
             centre.weighty = 1;
             centre.weightx = 1;
             actionButtonsPanel.add(finishButton, centre);

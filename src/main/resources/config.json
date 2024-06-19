@@ -16,9 +16,16 @@
     }
   ],
   "user_interface": {
+    "use_system_theme": false,
     "barcode_scanning_screen": {
       "scanning_timeout_seconds": 10,
       "mirror_image": true
+    },
+    "pop_ups": {
+      "width": 100,
+      "height": 40,
+      "message_font_size": 30,
+      "button_font_size": 40
     },
     "product_screen": {
       "product_name_font": {
@@ -90,6 +97,8 @@
       }
     },
     "product_search_screen": {
+      "product_option_background_override": "dark_gray",
+      "product_option_foreground_override": "white",
       "back_button_font": {
         "name": "SansSerif",
         "style": 0,
