@@ -32,7 +32,7 @@ public class WebcamCameraViewer implements CameraViewer {
     @Override
     public boolean open() {
         try {
-            return webcam.open();
+            return webcam.open(false);
         } catch (Exception e) {
             return false;
         }

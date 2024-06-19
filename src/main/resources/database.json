@@ -11,7 +11,11 @@
           "material_to_dispose": "plastic"
         },
         {
-          "instruction": "Be proud of yourself",
+          "instruction": "Be proud of yourself\nBecause I am!",
+          "requires_waste_disposal": false
+        },
+        {
+          "instruction": "hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello",
           "requires_waste_disposal": false
         }
       ]

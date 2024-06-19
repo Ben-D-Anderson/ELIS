@@ -1,5 +1,6 @@
 package org.elis.recycle.gui.screens;
 
+import org.elis.recycle.bin.Disposer;
 import org.elis.recycle.database.Product;
 import org.elis.recycle.database.RecycleStep;
 import org.elis.recycle.files.Config;
@@ -11,10 +12,12 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProductScreen extends JPanel {
 
     private final MainWindow mainWindow;
+    private final Config config;
     private final Product product;
     private final JPanel stepsPanel = new JPanel();
     private final JPanel actionButtonsPanel = new JPanel();
@@ -23,23 +26,16 @@ public class ProductScreen extends JPanel {
     private static final String NEXT_TEXT = "<html><center>Next<br />Step</center></html>";
     private final JButton nextStepButton = new JButton(NEXT_TEXT);
     private final JButton disposeButton = new JButton("<html><center>Dispose<br />Item</center></html>");
-    private final JButton beginRecycleButton = new JButton("<html><center>Begin<br />Recycle</center></html>");
     private final JLabel currentStepInstructionLabel = new JLabel();
     private final Component spacer = Box.createHorizontalStrut(50);
     private int currentStepIndex = 0;
     private long lastClick = 0L;
     private static final long CLICK_COOLDOWN_MILLIS = 200L;
-    private StepState state = StepState.BEFORE;
-
-    enum StepState {
-        BEFORE,
-        DURING,
-        AFTER
-    }
 
     public ProductScreen(MainWindow mainWindow, Config config, Product product) {
         super();
         this.mainWindow = mainWindow;
+        this.config = config;
         this.product = product;
 
         setLayout(new GridBagLayout());
@@ -87,16 +83,20 @@ public class ProductScreen extends JPanel {
         backButton.setFont(config.getUserInterfaceSettings()
                 .getProductScreenSettings()
                 .getBackButtonFont().asFont());
+        backButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1, false),
+                backButton.getBorder()));
         backButton.setFocusPainted(false);
         backButton.addActionListener(actionEvent -> returnToMenu());
 
         add(backButton, topLeft);
 
-        add(Box.createHorizontalStrut(1), topLeft);
-
         JLabel productNameLabel = new JLabel(product.getName());
         productNameLabel.setFont(config.getUserInterfaceSettings()
                 .getProductScreenSettings().getProductNameFont().asFont());
+        productNameLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 1, false),
+                BorderFactory.createEmptyBorder(0, 20, 0, 0)));
         add(productNameLabel, topRight);
 
         currentStepInstructionLabel.setFont(config.getUserInterfaceSettings()
@@ -133,7 +133,8 @@ public class ProductScreen extends JPanel {
                     return;
                 }
                 lastClick = currentTime;
-                disposeClicked(config);
+
+                disposeClicked();
             }
         });
         nextStepButton.addMouseListener(new MouseAdapter() {
@@ -159,6 +160,7 @@ public class ProductScreen extends JPanel {
             }
         });
 
+        JButton beginRecycleButton = new JButton("<html><center>Begin<br />Recycle</center></html>");
         beginRecycleButton.setFont(config.getUserInterfaceSettings()
                 .getProductScreenSettings().getBeginRecycleButtonFont().asFont());
         beginRecycleButton.setFocusPainted(false);
@@ -174,7 +176,6 @@ public class ProductScreen extends JPanel {
                 }
                 lastClick = currentTime;
                 stepsPanel.removeAll();
-                state = StepState.DURING;
                 actionButtonsPanel.add(disposeButton);
                 actionButtonsPanel.add(spacer);
                 actionButtonsPanel.add(nextStepButton);
@@ -191,29 +192,77 @@ public class ProductScreen extends JPanel {
         add(stepsPanel, remainder);
     }
 
-    private void disposeClicked(Config config) {
+    private void disposeClicked() {
         Optional<RecycleStep> currentRecycleStepOptional = getCurrentStep();
         if (currentRecycleStepOptional.isEmpty()) return;
         RecycleStep recycleStep = currentRecycleStepOptional.get();
         if (!recycleStep.isRequiresWasteDisposal()) return;
 
-        boolean confirmed = CustomOptionPane.showConfirmDialog(config, this,
-                "WARNING: The tilting table is going to move.\n" +
-                "Are all body parts clear of the platform?", "Tilting Table Warning");
-        System.out.println(confirmed);
-        if (!confirmed) return;
         String material = recycleStep.getMaterialToDispose();
+        Optional<Config.Bin> binOptional = config.getMaterialBin(material);
+        if (binOptional.isEmpty()) {
+            CustomOptionPane.showMessageDialog(config,
+                    this,
+                    "You have not set up a bin supporting this material.",
+                    "No Appropriate Bin",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        boolean confirmed = CustomOptionPane.showConfirmDialog(config, this,
+                "WARNING: The tilting platform is going to move.\n" +
+                "Are all body parts clear of the platform?", "Safety Warning");
+        if (!confirmed) return;
+
+        mainWindow.loadingScreen("Disposing Material...");
+        new Thread(() -> {
+            Disposer.dispose(binOptional.get(), () -> SwingUtilities.invokeLater(() -> {
+                disposeButton.setEnabled(false);
+                nextStepButton.setText(NEXT_TEXT);
+                mainWindow.setScreen(this);
+            }), exception -> SwingUtilities.invokeLater(() -> {
+                mainWindow.setScreen(this);
+                CustomOptionPane.showMessageDialog(config, this,
+                        "An unexpected error occurred whilst disposing the item."
+                                + ((exception == null) ? "" : "\n\nError: " + exception.getMessage()),
+                        "Disposal Error", JOptionPane.ERROR_MESSAGE);
+            }));
+        }).start();
+    }
+
+    private void updateCurrentStepInstructionLabel(String newText) {
+        StringBuilder formattedText = new StringBuilder("<html>");
+        newText = newText.replace("\n", "<br />");
+        while (newText.length() > config.getUserInterfaceSettings()
+                .getProductScreenSettings().getInstructionLineLength()) {
+            formattedText.append(newText, 0, config.getUserInterfaceSettings()
+                    .getProductScreenSettings().getInstructionLineLength());
+            if (Character.isAlphabetic(newText.charAt(config.getUserInterfaceSettings()
+                    .getProductScreenSettings().getInstructionLineLength() - 1))
+                    && Character.isAlphabetic(newText.charAt(config.getUserInterfaceSettings()
+                    .getProductScreenSettings().getInstructionLineLength()))) {
+                formattedText.append("-");
+            }
+            formattedText.append("<br />");
+            newText = newText.substring(config.getUserInterfaceSettings()
+                    .getProductScreenSettings().getInstructionLineLength());
+        }
+        formattedText.append(newText);
+        int paddingToAdd = newText.length() - config.getUserInterfaceSettings()
+                .getProductScreenSettings().getInstructionLineLength();
+        formattedText.append(" ".repeat(Math.max(0, paddingToAdd)));
+        formattedText.append("</html>");
+        currentStepInstructionLabel.setText(formattedText.toString());
     }
 
     private void nextStep() {
         currentStepIndex++;
         getCurrentStep().ifPresentOrElse(currentStep -> {
-            currentStepInstructionLabel.setText(currentStep.getInstruction());
+            updateCurrentStepInstructionLabel(currentStep.getInstruction());
             disposeButton.setEnabled(currentStep.isRequiresWasteDisposal());
             nextStepButton.setText(currentStep.isRequiresWasteDisposal() ? SKIP_TEXT : NEXT_TEXT);
         }, () -> {
-            state = StepState.AFTER;
-            currentStepInstructionLabel.setText("Finished Recycling Product");
+            updateCurrentStepInstructionLabel("Finished Recycling Product");
             actionButtonsPanel.remove(disposeButton);
             actionButtonsPanel.remove(spacer);
             actionButtonsPanel.remove(nextStepButton);
@@ -232,11 +281,6 @@ public class ProductScreen extends JPanel {
     }
 
     private void returnToMenu() {
-        if (state == StepState.DURING) {
-            //todo: consider if currently recycling (i.e. state of tilt table)
-            //if the table is currently not in the standard position then
-            //show a dialogue before moving it back (JInputBox?)
-        }
         mainWindow.mainScreen();
     }
 

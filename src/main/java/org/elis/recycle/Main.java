@@ -1,5 +1,6 @@
 package org.elis.recycle;
 
+import org.elis.recycle.bin.Disposer;
 import org.elis.recycle.database.Database;
 import org.elis.recycle.database.DatabaseFactory;
 import org.elis.recycle.files.Config;
@@ -14,5 +15,7 @@ public class Main {
         MainWindow mainWindow = new MainWindow(config, database);
         mainWindow.mainScreen();
         mainWindow.setVisible(true);
+
+        new Thread(Disposer::reset).start();
     }
 }

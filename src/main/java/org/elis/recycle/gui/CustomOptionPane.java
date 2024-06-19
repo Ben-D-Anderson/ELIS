@@ -11,17 +11,23 @@ public class CustomOptionPane {
                                             Component parent,
                                             String message,
                                             String title) {
-        message = "<html><font size='" + config.getUserInterfaceSettings()
+        message = "<html><font face='" + config.getUserInterfaceSettings()
+                .getPopUpSettings().getMessageFontFamily() + "' size='"
+                + config.getUserInterfaceSettings()
                 .getPopUpSettings().getMessageFontSize() + "'>"
                 + message.replace("\n", "<br />")
                 + "</font><br /><br /><br /></html>";
         String[] options = {
                 // The YES Button.
-                "<html><font size='" + config.getUserInterfaceSettings()
-                        .getPopUpSettings().getButtonFontSize() + "'>Yes</font></html>",
+                "<html><font face='" + config.getUserInterfaceSettings()
+                        .getPopUpSettings().getMessageFontFamily() + "' size='"
+                        + config.getUserInterfaceSettings()
+                        .getPopUpSettings().getButtonFontSize() + "'>YES</font></html>",
                 // The NO button.
-                "<html><font size='" + config.getUserInterfaceSettings()
-                        .getPopUpSettings().getButtonFontSize() + "'>No</font></html>"};
+                "<html><font face='" + config.getUserInterfaceSettings()
+                        .getPopUpSettings().getMessageFontFamily() + "' size='"
+                        + config.getUserInterfaceSettings()
+                        .getPopUpSettings().getButtonFontSize() + "'>NO</font></html>"};
         return 0 == JOptionPane.showOptionDialog(parent, message, title,
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
@@ -32,14 +38,18 @@ public class CustomOptionPane {
                                          String message,
                                          String title,
                                          int messageType) {
-        message = "<html><font size='" + config.getUserInterfaceSettings()
+        message = "<html><font face='" + config.getUserInterfaceSettings()
+                .getPopUpSettings().getMessageFontFamily() + "' size='"
+                + config.getUserInterfaceSettings()
                 .getPopUpSettings().getMessageFontSize() + "'>"
                 + message.replace("\n", "<br />")
                 + "</font><br /><br /><br /></html>";
         String[] options = {
                 // The OK Button.
-                "<html><font size='" + config.getUserInterfaceSettings()
-                        .getPopUpSettings().getButtonFontSize() + "'>Ok</font></html>"};
+                "<html><font face='" + config.getUserInterfaceSettings()
+                        .getPopUpSettings().getMessageFontFamily() + "' size='"
+                        + config.getUserInterfaceSettings()
+                        .getPopUpSettings().getButtonFontSize() + "'>OK</font></html>"};
         JOptionPane.showOptionDialog(parent, message, title,
                 JOptionPane.DEFAULT_OPTION, messageType,
                 null, options, options[0]);

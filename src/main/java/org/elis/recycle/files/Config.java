@@ -77,6 +77,10 @@ public class Config {
         private final int messageFontSize;
         @SerializedName("button_font_size")
         private final int buttonFontSize;
+        @SerializedName("message_font_family")
+        private final String messageFontFamily;
+        @SerializedName("button_font_family")
+        private final String buttonFontFamily;
 
     }
 
@@ -84,6 +88,8 @@ public class Config {
     @Getter
     public static class ProductScreenSettings {
 
+        @SerializedName("instruction_line_length")
+        private final int instructionLineLength;
         @SerializedName("step_font")
         private final FontContainer stepFont;
         @SerializedName("product_name_font")
