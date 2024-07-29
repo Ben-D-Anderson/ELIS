@@ -1,5 +1,5 @@
 #jre
-sudo apt install openjdk-16-jre –y
+sudo apt install default-jre
 
 #virtual keyboard
 sudo apt install onboard -y
