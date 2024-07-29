@@ -12,7 +12,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProductScreen extends JPanel {
 
@@ -214,7 +213,7 @@ public class ProductScreen extends JPanel {
                 "Are all body parts clear of the platform?", "Safety Warning");
         if (!confirmed) return;
 
-        mainWindow.loadingScreen("Disposing Material...");
+        mainWindow.loadingScreen("Disposing material in bin '" + binOptional.get().getName() + "'...");
         new Thread(() -> {
             Disposer.dispose(binOptional.get(), () -> SwingUtilities.invokeLater(() -> {
                 disposeButton.setEnabled(false);
