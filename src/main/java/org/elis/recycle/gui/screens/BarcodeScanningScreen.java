@@ -2,7 +2,7 @@ package org.elis.recycle.gui.screens;
 
 import org.elis.recycle.barcode.BarcodeScanner;
 import org.elis.recycle.barcode.CameraException;
-import org.elis.recycle.barcode.impl.RPiCamViewer;
+import org.elis.recycle.barcode.impl.PiCamViewer;
 import org.elis.recycle.barcode.impl.ZXingBarcodeDecoder;
 import org.elis.recycle.files.Config;
 
@@ -116,7 +116,7 @@ public class BarcodeScanningScreen extends JPanel {
     public void start(Duration timeout, Consumer<String> barcodeCallback, Runnable timeoutCallback)
             throws CameraException {
         BarcodeScanner barcodeScanner = new BarcodeScanner(
-                new RPiCamViewer(),
+                new PiCamViewer(),
                 new ZXingBarcodeDecoder()
         );
 
