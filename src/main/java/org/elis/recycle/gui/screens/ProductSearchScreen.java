@@ -7,10 +7,7 @@ import org.elis.recycle.gui.VirtualKeyboard;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
@@ -29,7 +26,7 @@ public class ProductSearchScreen extends JPanel {
         super();
         this.config = config;
         this.database = database;
-        virtualKeyboard = new VirtualKeyboard();
+        virtualKeyboard = new VirtualKeyboard(config);
         setLayout(new GridBagLayout());
 
         JButton backButton = new JButton("Back");
@@ -45,15 +42,15 @@ public class ProductSearchScreen extends JPanel {
             public void mousePressed(MouseEvent e) {
                 textInputField.requestFocusInWindow();
                 try {
-                    virtualKeyboard.start();
+                    virtualKeyboard.start(textInputField, textInputField.getCaretPosition(), null, 0);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
             }
         });
-        textInputField.addKeyListener(new KeyAdapter() {
+        textInputField.addFocusListener(new FocusAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void focusGained(FocusEvent e) {
                 String searchQuery = textInputField.getText();
                 loadOptions(database.findProducts(searchQuery));
             }
@@ -153,7 +150,7 @@ public class ProductSearchScreen extends JPanel {
         this.chosenConsumer = chosenConsumer;
         this.backButtonCallback = backButtonCallback;
         loadOptions(database.findProducts(""));
-        virtualKeyboard.start();
+        virtualKeyboard.start(textInputField, 0, null, 0);
     }
 
     private void returnToMenu() {

@@ -33,7 +33,7 @@ public class ConfigScreen extends JPanel {
         this.config = config;
         this.textArea = new JTextArea();
         this.database = database;
-        this.virtualKeyboard = new VirtualKeyboard();
+        this.virtualKeyboard = new VirtualKeyboard(config);
         final ConfigScreen thisInstance = this;
 
         textArea.setFont(config.getUserInterfaceSettings()
@@ -72,7 +72,8 @@ public class ConfigScreen extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 try {
-                    virtualKeyboard.start();
+                    virtualKeyboard.start(textArea, textArea.getCaretPosition(),
+                            scrollPane.getVerticalScrollBar(), scrollPane.getVerticalScrollBar().getValue());
                 } catch (IOException ex) {
                     CustomOptionPane.showMessageDialog(config, thisInstance,
                             "Failed to open on-screen keyboard.",
@@ -87,9 +88,9 @@ public class ConfigScreen extends JPanel {
                 save();
             }
         });
-        textArea.addKeyListener(new KeyAdapter() {
+        textArea.addFocusListener(new FocusAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void focusGained(FocusEvent e) {
                 if (!textArea.getText().equals(oldConfigString)) {
                     updateDatabaseButton.setEnabled(false);
                     saveButton.setEnabled(true);

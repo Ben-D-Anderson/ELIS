@@ -55,10 +55,6 @@ public class MainWindow extends JFrame {
         }
         mainMenuScreen.setup(getSize());
 
-        if (Toolkit.getDefaultToolkit().isAlwaysOnTopSupported()) {
-            setAlwaysOnTop(true);
-        }
-
         setLayout(new GridBagLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("ELIS");

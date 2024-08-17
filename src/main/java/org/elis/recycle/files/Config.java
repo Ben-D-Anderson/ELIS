@@ -39,6 +39,9 @@ public class Config {
     @Getter
     public static class UserInterfaceSettings {
 
+        @SerializedName("virtual_keyboard_font")
+        private FontContainer virtualKeyboardFont;
+
         @SerializedName("product_screen")
         private ProductScreenSettings productScreenSettings;
 
