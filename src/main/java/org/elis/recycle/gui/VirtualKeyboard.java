@@ -22,16 +22,16 @@ public class VirtualKeyboard extends JFrame implements AutoCloseable {
         this.config = config;
         int width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         int screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-        int keyboardHeight = (int) (screenHeight / 2.5);
+        int keyboardHeight = (int) (screenHeight / 3);
 
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(width, keyboardHeight);
-        setLocation(0, screenHeight - keyboardHeight);
         setResizable(false);
         setUndecorated(true);
         setFocusable(false);
         setAlwaysOnTop(true);
         setLayout(new GridLayout(5, 12));
+        setLocation(0, screenHeight - keyboardHeight);
         close();
 
         add(createKeyButton("!"));

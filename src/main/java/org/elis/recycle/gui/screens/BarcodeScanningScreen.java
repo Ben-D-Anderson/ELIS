@@ -3,6 +3,8 @@ package org.elis.recycle.gui.screens;
 import org.elis.recycle.barcode.BarcodeScanner;
 import org.elis.recycle.barcode.CameraException;
 import org.elis.recycle.barcode.impl.PiCamViewer;
+import org.elis.recycle.barcode.impl.PythonCameraViewer;
+import org.elis.recycle.barcode.impl.WebcamCameraViewer;
 import org.elis.recycle.barcode.impl.ZXingBarcodeDecoder;
 import org.elis.recycle.files.Config;
 

@@ -32,7 +32,7 @@
     "virtual_keyboard_font": {
       "name": "SansSerif",
       "style": 0,
-      "size": 30
+      "size": 15
     },
     "product_screen": {
       "instruction_line_length": 40,

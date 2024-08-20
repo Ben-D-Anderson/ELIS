@@ -3,7 +3,9 @@ package org.elis.recycle.barcode.impl;
 import org.elis.recycle.barcode.CameraException;
 import org.elis.recycle.barcode.CameraViewer;
 import uk.co.caprica.picam.*;
+import uk.co.caprica.picam.enums.AutomaticWhiteBalanceMode;
 import uk.co.caprica.picam.enums.Encoding;
+import uk.co.caprica.picam.enums.ExposureMode;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -20,7 +22,7 @@ import static uk.co.caprica.picam.PicamNativeLibrary.installTempLibrary;
 
 public class PiCamViewer implements CameraViewer {
 
-    private final Camera camera;
+    private Camera camera;
     private final PictureCaptureHandler<byte[]> byteCaptureHandler;
     private final PictureCaptureHandler<File> fileCaptureHandler;
     private final Path tempImageFile;
@@ -29,21 +31,27 @@ public class PiCamViewer implements CameraViewer {
     public PiCamViewer() throws CameraException {
         try {
             installTempLibrary();
-            CameraConfiguration cameraConfiguration = cameraConfiguration()
-                    .width(1024)
-                    .height(600)
-                    .encoding(Encoding.JPEG);
-            camera = new Camera(cameraConfiguration);
-            byteCaptureHandler = new ByteArrayPictureCaptureHandler();
-            tempImageFile = Paths.get(System.getProperty("java.io.tmpdir"), "temp_picam_image.jpeg");
-            fileCaptureHandler = new FilePictureCaptureHandler(tempImageFile);
-        } catch (NativeLibraryException | uk.co.caprica.picam.CameraException e) {
-            throw new CameraException(e);
-        }
+        } catch (NativeLibraryException ignored) {}
+        byteCaptureHandler = new ByteArrayPictureCaptureHandler();
+        tempImageFile = Paths.get(System.getProperty("java.io.tmpdir"), "temp_picam_image.jpeg");
+        fileCaptureHandler = new FilePictureCaptureHandler(tempImageFile);
     }
 
     @Override
     public boolean open() {
+        try {
+            CameraConfiguration cameraConfiguration = cameraConfiguration()
+                    .width(1024)
+                    .height(530)
+                    .quality(100)
+                    .automaticWhiteBalance(AutomaticWhiteBalanceMode.AUTO)
+                    .exposureMode(ExposureMode.AUTO)
+                    .encoding(Encoding.JPEG);
+            camera = new Camera(cameraConfiguration);
+        } catch (uk.co.caprica.picam.CameraException e) {
+            e.printStackTrace();
+            return false;
+        }
         return camera.open();
     }
 
@@ -64,13 +72,14 @@ public class PiCamViewer implements CameraViewer {
                 image = ImageIO.read(tempImageFile.toFile());
             }
             return Optional.ofNullable(image);
-        } catch (IOException | CaptureFailedException e) {
+        } catch (IOException | CaptureFailedException | NullPointerException e) {
             return Optional.empty();
         }
     }
 
     @Override
     public void close() {
+        if (camera == null) return;
         camera.close();
     }
 
