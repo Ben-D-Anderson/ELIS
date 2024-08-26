@@ -3,6 +3,7 @@ package org.elis.recycle.gui;
 import org.elis.recycle.files.Config;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.io.IOException;
@@ -34,16 +35,16 @@ public class VirtualKeyboard extends JFrame implements AutoCloseable {
         setLocation(0, screenHeight - keyboardHeight);
         close();
 
-        add(createKeyButton("!"));
-        add(createKeyButton("\""));
-        add(createKeyButton("£"));
-        add(createKeyButton("$"));
-        add(createKeyButton("%"));
-        add(createKeyButton("^"));
-        add(createKeyButton("&"));
-        add(createKeyButton("*"));
-        add(createKeyButton("("));
-        add(createKeyButton(")"));
+        add(createKeyButton("1"));
+        add(createKeyButton("2"));
+        add(createKeyButton("3"));
+        add(createKeyButton("4"));
+        add(createKeyButton("5"));
+        add(createKeyButton("6"));
+        add(createKeyButton("7"));
+        add(createKeyButton("8"));
+        add(createKeyButton("9"));
+        add(createKeyButton("0"));
         add(createKeyButton("-"));
         add(createKeyButton("_"));
 
@@ -60,7 +61,7 @@ public class VirtualKeyboard extends JFrame implements AutoCloseable {
         add(createKeyButton("+"));
         add(createKeyButton("DEL"));
 
-        add(createKeyButton("CAPS"));
+        add(createKeyButton("SHIFT"));
         add(createKeyButton("A"));
         add(createKeyButton("S"));
         add(createKeyButton("D"));
@@ -118,6 +119,8 @@ public class VirtualKeyboard extends JFrame implements AutoCloseable {
         JButton button = new JButton(buttonText);
         button.setFont(config.getUserInterfaceSettings().getVirtualKeyboardFont().asFont());
         button.setFocusable(false);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setBorder(new LineBorder(Color.DARK_GRAY));
         button.addActionListener(actionEvent -> {
             String newText = typingComponent.getText();
             if (buttonText.equals("DEL")) {
@@ -130,7 +133,7 @@ public class VirtualKeyboard extends JFrame implements AutoCloseable {
                 newText = typingComponent.getText().substring(0, caretPosition)
                         + "\n" + typingComponent.getText().substring(caretPosition);
                 caretPosition++;
-            } else if (buttonText.equals("CAPS")) {
+            } else if (buttonText.equals("SHIFT")) {
                 setCaps(!capsEnabled);
                 return;
             } else if (buttonText.equals("SPACE")) {
@@ -163,8 +166,76 @@ public class VirtualKeyboard extends JFrame implements AutoCloseable {
                         buttonComponent.getText().toUpperCase() :
                         buttonComponent.getText().toLowerCase()));
             }
+            switch (buttonComponent.getText()) {
+                case "!":
+                    if (!capsEnabled) setText(buttonComponent, "1");
+                    break;
+                case "\"":
+                    if (!capsEnabled) setText(buttonComponent, "2");
+                    break;
+                case "£":
+                    if (!capsEnabled) setText(buttonComponent, "3");
+                    break;
+                case "$":
+                    if (!capsEnabled) setText(buttonComponent, "4");
+                    break;
+                case "%":
+                    if (!capsEnabled) setText(buttonComponent, "5");
+                    break;
+                case "^":
+                    if (!capsEnabled) setText(buttonComponent, "6");
+                    break;
+                case "&":
+                    if (!capsEnabled) setText(buttonComponent, "7");
+                    break;
+                case "*":
+                    if (!capsEnabled) setText(buttonComponent, "8");
+                    break;
+                case "(":
+                    if (!capsEnabled) setText(buttonComponent, "9");
+                    break;
+                case ")":
+                    if (!capsEnabled) setText(buttonComponent, "0");
+                    break;
+                case "1":
+                    if (capsEnabled) setText(buttonComponent, "!");
+                    break;
+                case "2":
+                    if (capsEnabled) setText(buttonComponent, "\"");
+                    break;
+                case "3":
+                    if (capsEnabled) setText(buttonComponent, "£");
+                    break;
+                case "4":
+                    if (capsEnabled) setText(buttonComponent, "$");
+                    break;
+                case "5":
+                    if (capsEnabled) setText(buttonComponent, "%");
+                    break;
+                case "6":
+                    if (capsEnabled) setText(buttonComponent, "^");
+                    break;
+                case "7":
+                    if (capsEnabled) setText(buttonComponent, "&");
+                    break;
+                case "8":
+                    if (capsEnabled) setText(buttonComponent, "*");
+                    break;
+                case "9":
+                    if (capsEnabled) setText(buttonComponent, "(");
+                    break;
+                case "0":
+                    if (capsEnabled) setText(buttonComponent, ")");
+                    break;
+                default:
+                    break;
+            }
         }
         this.capsEnabled = capsEnabled;
+    }
+
+    private void setText(JButton b, String s) {
+        SwingUtilities.invokeLater(() -> b.setText(s));
     }
 
 }

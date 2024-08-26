@@ -43,9 +43,7 @@ public class PiCamViewer implements CameraViewer {
             CameraConfiguration cameraConfiguration = cameraConfiguration()
                     .width(1024)
                     .height(530)
-                    .quality(100)
-                    .automaticWhiteBalance(AutomaticWhiteBalanceMode.AUTO)
-                    .exposureMode(ExposureMode.AUTO)
+                    .sharpness(100)
                     .encoding(Encoding.JPEG);
             camera = new Camera(cameraConfiguration);
         } catch (uk.co.caprica.picam.CameraException e) {
