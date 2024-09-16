@@ -215,7 +215,7 @@ public class ProductScreen extends JPanel {
 
         mainWindow.loadingScreen("Disposing material in bin '" + binOptional.get().getName() + "'...");
         new Thread(() -> {
-            Disposer.dispose(binOptional.get(), () -> SwingUtilities.invokeLater(() -> {
+            Disposer.dispose(config, binOptional.get(), () -> SwingUtilities.invokeLater(() -> {
                 disposeButton.setEnabled(false);
                 nextStepButton.setText(NEXT_TEXT);
                 mainWindow.setScreen(this);

@@ -1,4 +1,6 @@
 {
+  "servo_tilt_angle": 20,
+  "servo_wait_time": 2000,
   "wifi_network": {
     "name": "",
     "password": ""

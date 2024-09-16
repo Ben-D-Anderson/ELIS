@@ -26,6 +26,12 @@ public class Config {
         this.userInterfaceSettings = newConfig.userInterfaceSettings;
     }
 
+    @SerializedName("servo_wait_time")
+    private long servoWaitTime;
+
+    @SerializedName("servo_tilt_angle")
+    private int servoTiltAngle;
+
     @SerializedName("wifi_network")
     private WifiNetwork wifiNetwork;
 

@@ -7,6 +7,8 @@ import org.elis.recycle.files.Config;
 import org.elis.recycle.files.ConfigFactory;
 import org.elis.recycle.gui.MainWindow;
 
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
         Config config = ConfigFactory.loadConfigOrBackup(ConfigFactory.getConfigFile());
@@ -16,6 +18,12 @@ public class Main {
         mainWindow.mainScreen();
         mainWindow.setVisible(true);
 
-        new Thread(Disposer::reset).start();
+        new Thread(() -> {
+            try {
+                Disposer.reset();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
