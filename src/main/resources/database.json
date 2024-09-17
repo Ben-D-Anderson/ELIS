@@ -12,7 +12,8 @@
         },
         {
           "instruction": "Be proud of yourself\nBecause I am!",
-          "requires_waste_disposal": false
+          "requires_waste_disposal": true,
+          "material_to_dispose": "glass"
         },
         {
           "instruction": "hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello",
